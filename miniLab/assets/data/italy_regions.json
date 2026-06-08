@@ -1,0 +1,22 @@
+[
+  {"id":"vda","name":"Valle d'Aosta","capital":"Aosta","lat":45.737,"lon":7.315},
+  {"id":"pie","name":"Piemonte","capital":"Torino","lat":45.063,"lon":7.671},
+  {"id":"lig","name":"Liguria","capital":"Genova","lat":44.405,"lon":8.946},
+  {"id":"lom","name":"Lombardia","capital":"Milano","lat":45.464,"lon":9.190},
+  {"id":"taa","name":"Trentino-A.A.","capital":"Trento","lat":46.070,"lon":11.119},
+  {"id":"ven","name":"Veneto","capital":"Venezia","lat":45.438,"lon":12.327},
+  {"id":"fvg","name":"Friuli-V.G.","capital":"Trieste","lat":45.649,"lon":13.777},
+  {"id":"emr","name":"Emilia-Romagna","capital":"Bologna","lat":44.493,"lon":11.343},
+  {"id":"tos","name":"Toscana","capital":"Firenze","lat":43.771,"lon":11.254},
+  {"id":"mar","name":"Marche","capital":"Ancona","lat":43.616,"lon":13.516},
+  {"id":"umb","name":"Umbria","capital":"Perugia","lat":43.110,"lon":12.389},
+  {"id":"laz","name":"Lazio","capital":"Roma","lat":41.894,"lon":12.482},
+  {"id":"abr","name":"Abruzzo","capital":"L'Aquila","lat":42.354,"lon":13.395},
+  {"id":"mol","name":"Molise","capital":"Campobasso","lat":41.562,"lon":14.656},
+  {"id":"cam","name":"Campania","capital":"Napoli","lat":40.852,"lon":14.268},
+  {"id":"bas","name":"Basilicata","capital":"Potenza","lat":40.639,"lon":15.806},
+  {"id":"pug","name":"Puglia","capital":"Bari","lat":41.117,"lon":16.872},
+  {"id":"cal","name":"Calabria","capital":"Catanzaro","lat":38.910,"lon":16.587},
+  {"id":"sic","name":"Sicilia","capital":"Palermo","lat":38.114,"lon":13.361},
+  {"id":"sar","name":"Sardegna","capital":"Cagliari","lat":39.223,"lon":9.122}
+]

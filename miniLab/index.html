@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var s=localStorage.getItem('jw-theme');if(s)document.documentElement.setAttribute('data-theme',s);})()</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>miniLab — Vetrina live · John Whale</title>
+  <meta name="description" content="Vetrina live: meteo, news tech/AI, offerte di lavoro con ranking semantico CV↔annuncio e KPI RAL. Generata automaticamente.">
+  <link rel="icon" type="image/png" href="assets/img/logo_jw_48.png">
+
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vendor/pico.min.css">
+  <link rel="stylesheet" href="assets/css/custom.css">
+
+  <script defer src="assets/js/canvas-bg.js"></script>
+  <script defer src="assets/js/lab.js"></script>
+  <script defer src="vendor/alpine.min.js"></script>
+
+  <style>
+    [x-cloak] { display: none !important; }
+    body { background-color: transparent !important; }
+
+    .section-label {
+      font-family: 'Ubuntu Mono', monospace; font-size: 0.72rem; letter-spacing: 0.18em;
+      color: var(--jw-accent); text-transform: uppercase; margin: 1.8rem 0 0.6rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .section-label::before { content: ''; width: 1.8rem; height: 1px; background: var(--jw-accent); display: inline-block; }
+    .section-note { font-family: 'Ubuntu Mono', monospace; font-size: 0.76rem; color: var(--jw-muted); margin: 0 0 1rem; line-height: 1.5; }
+
+    .meta-mono { font-family: 'Ubuntu Mono', monospace; font-size: 0.72rem; color: var(--jw-muted); }
+    .apri-link { font-size: 0.76rem; font-family: 'Ubuntu Mono', monospace; text-decoration: none; color: var(--jw-accent); white-space: nowrap; }
+    .apri-link:hover { text-decoration: underline; }
+    .score-tag { font-family: 'Ubuntu Mono', monospace; font-weight: 700; font-size: 0.92rem; }
+    .empty-state { color: var(--jw-muted); font-size: 0.88rem; font-style: italic; padding: 1rem 0; }
+
+    /* ── Nav allineata a johnwhale.com ─────────────────────── */
+    .nav-logo { display: flex; align-items: center; gap: 9px; font-family: 'Ubuntu Mono', monospace; font-weight: 700; font-size: 13px; letter-spacing: 0.2em; color: var(--jw-white); text-decoration: none; }
+    .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--jw-accent); flex-shrink: 0; }
+    .nav-right { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+    .nav-cta { font-family: 'Ubuntu Mono', monospace; font-size: 11px; letter-spacing: 0.1em; border: 1px solid var(--jw-accent); color: var(--jw-accent); background: transparent; border-radius: 4px; padding: 0.32rem 0.8rem; cursor: pointer; transition: background 0.15s; }
+    .nav-cta:hover { background: rgba(46,204,113,0.1); }
+    .nav-social { display: flex; align-items: center; gap: 0.7rem; }
+    .nav-social a { color: var(--jw-muted); display: flex; align-items: center; transition: color 0.15s; }
+    .nav-social a:hover { color: var(--jw-accent); }
+    .nav-date { font-size: 0.72rem; }
+    @media (max-width: 680px) { .nav-date { display: none; } }
+    @media (max-width: 560px) { .nav-social { display: none; } }
+
+    .chip-row { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
+    .chip-kw {
+      display: inline-block; border: 1px solid; border-radius: 3px; padding: 0.06rem 0.4rem;
+      font-size: 0.66rem; font-family: 'Ubuntu Mono', monospace; background: transparent; white-space: nowrap;
+    }
+
+    /* ── Layout a 2 colonne: sx = meteo+news, dx = KPI+offerte ── */
+    .main-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; margin-top: 1.5rem; }
+    @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+    .col { min-width: 0; }
+    .col .section-label:first-child { margin-top: 1.6rem; }
+
+    .panel { background: var(--jw-bg2); border: 1px solid var(--jw-border); border-radius: 10px; padding: 1.1rem 1.2rem; }
+    .panel-title { font-family: 'Ubuntu Mono', monospace; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--jw-accent); margin: 0 0 0.9rem; }
+    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .kpi { background: var(--jw-bg3); border: 1px solid var(--jw-border); border-radius: 8px; padding: 0.7rem 0.85rem; }
+    .kpi-val { font-family: 'Ubuntu Mono', monospace; font-size: 1.15rem; font-weight: 700; color: var(--jw-accent); line-height: 1.2; }
+    .kpi-lbl { font-family: 'Ubuntu Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--jw-muted); margin-top: 0.25rem; }
+
+    /* ── Card orizzontali (stile report miniHr) ───────────── */
+    .rows { display: flex; flex-direction: column; gap: 0.6rem; }
+    .row-item {
+      background: var(--jw-bg2); border: 1px solid var(--jw-border); border-left: 3px solid var(--jw-accent);
+      border-radius: 6px; padding: 0.8rem 1.1rem; transition: border-color 0.15s;
+    }
+    .row-item:hover { border-color: rgba(46,204,113,0.4); }
+    .row-top { display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; }
+    .row-title { font-size: 0.96rem; font-weight: 500; margin: 0.2rem 0 0; line-height: 1.35; }
+    .row-title a { color: var(--jw-white); text-decoration: none; }
+    .row-title a:hover { color: var(--jw-accent); }
+    .row-sub { font-size: 0.84rem; color: var(--jw-muted); line-height: 1.5; margin: 0.3rem 0 0; }
+
+    .toggle-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 1rem;
+      background: var(--jw-bg3); border: 1px solid var(--jw-border); color: var(--jw-accent);
+      font-family: 'Ubuntu Mono', monospace; font-size: 0.78rem; border-radius: 6px;
+      padding: 0.4rem 0.9rem; cursor: pointer; transition: border-color 0.15s;
+    }
+    .toggle-btn:hover { border-color: rgba(46,204,113,0.45); }
+
+    /* ── Footer identico a johnwhale.com ───────────────────── */
+    .lab-footer { display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--jw-border); }
+    .footer-mark { font-family: 'Ubuntu Mono', monospace; font-weight: 700; font-size: 18px; letter-spacing: 0.14em; color: var(--jw-white); }
+    .footer-mark span { color: var(--jw-accent); }
+    .footer-sub { font-family: 'Ubuntu Mono', monospace; font-size: 11px; color: var(--jw-muted); margin-top: 0.35rem; }
+    .footer-links { display: flex; flex-direction: column; gap: 0.4rem; }
+    .footer-links a { font-family: 'Ubuntu Mono', monospace; font-size: 12px; color: var(--jw-muted); text-decoration: none; transition: color 0.15s; }
+    .footer-links a:hover { color: var(--jw-accent); }
+    .footer-copy { text-align: center; font-family: 'Ubuntu Mono', monospace; font-size: 10px; color: var(--jw-border); padding: 1.5rem 0 2rem; letter-spacing: 0.08em; }
+
+    /* ── Modale CV ─────────────────────────────────────────── */
+    .cv-block { margin-top: 1.4rem; padding-top: 1.1rem; border-top: 1px solid var(--jw-border); }
+    .cv-block h5 { font-family: 'Ubuntu Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--jw-accent); margin: 0 0 0.7rem; }
+    .cv-exp { padding-left: 0.9rem; border-left: 2px solid var(--jw-border); margin-bottom: 1rem; }
+    .cv-exp-head { display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; align-items: baseline; }
+    .cv-exp-role { color: var(--jw-white); font-weight: 500; font-size: 0.92rem; }
+    .cv-exp-when { font-family: 'Ubuntu Mono', monospace; font-size: 0.7rem; color: var(--jw-muted); white-space: nowrap; }
+    .cv-exp-org { color: var(--jw-accent); font-size: 0.8rem; margin-bottom: 0.35rem; }
+    .cv-exp ul, .cv-list { margin: 0; padding-left: 1.1rem; }
+    .cv-exp li, .cv-list li { font-size: 0.85rem; color: var(--jw-text); line-height: 1.5; margin-bottom: 0.25rem; }
+    .cv-comp { margin-bottom: 0.6rem; }
+    .cv-comp-cat { font-family: 'Ubuntu Mono', monospace; font-size: 0.74rem; color: var(--jw-white); margin-bottom: 0.2rem; }
+    .meteo-umid { font-size: 0.62rem; color: #74b9ff; display: block; }
+  </style>
+
+  <script>window.LAB_DATA = {"generato_il": "08/06/2026 20:59", "meteo": {"location": "Bergamo", "temp": "23°C", "condition": "Coperto", "icon": "☁️"}, "regioni": [{"id": "vda", "name": "Valle d'Aosta", "capital": "Aosta", "lat": 45.737, "lon": 7.315}, {"id": "pie", "name": "Piemonte", "capital": "Torino", "lat": 45.063, "lon": 7.671}, {"id": "lig", "name": "Liguria", "capital": "Genova", "lat": 44.405, "lon": 8.946}, {"id": "lom", "name": "Lombardia", "capital": "Milano", "lat": 45.464, "lon": 9.19}, {"id": "taa", "name": "Trentino-A.A.", "capital": "Trento", "lat": 46.07, "lon": 11.119}, {"id": "ven", "name": "Veneto", "capital": "Venezia", "lat": 45.438, "lon": 12.327}, {"id": "fvg", "name": "Friuli-V.G.", "capital": "Trieste", "lat": 45.649, "lon": 13.777}, {"id": "emr", "name": "Emilia-Romagna", "capital": "Bologna", "lat": 44.493, "lon": 11.343}, {"id": "tos", "name": "Toscana", "capital": "Firenze", "lat": 43.771, "lon": 11.254}, {"id": "mar", "name": "Marche", "capital": "Ancona", "lat": 43.616, "lon": 13.516}, {"id": "umb", "name": "Umbria", "capital": "Perugia", "lat": 43.11, "lon": 12.389}, {"id": "laz", "name": "Lazio", "capital": "Roma", "lat": 41.894, "lon": 12.482}, {"id": "abr", "name": "Abruzzo", "capital": "L'Aquila", "lat": 42.354, "lon": 13.395}, {"id": "mol", "name": "Molise", "capital": "Campobasso", "lat": 41.562, "lon": 14.656}, {"id": "cam", "name": "Campania", "capital": "Napoli", "lat": 40.852, "lon": 14.268}, {"id": "bas", "name": "Basilicata", "capital": "Potenza", "lat": 40.639, "lon": 15.806}, {"id": "pug", "name": "Puglia", "capital": "Bari", "lat": 41.117, "lon": 16.872}, {"id": "cal", "name": "Calabria", "capital": "Catanzaro", "lat": 38.91, "lon": 16.587}, {"id": "sic", "name": "Sicilia", "capital": "Palermo", "lat": 38.114, "lon": 13.361}, {"id": "sar", "name": "Sardegna", "capital": "Cagliari", "lat": 39.223, "lon": 9.122}], "cv": {"_note": "CV reale di G. Savona per il display, SANIFICATO: niente indirizzo, telefono o email personale. Fonte: matcHr/data/cv_md/cv_savona_05-2026.md.", "nome": "Gianluca Savona", "ruolo": "Analista di Processi e Sistemi · SAP & AI Solutions", "location": "Bergamo, IT", "email": "hi@johnwhale.com", "linkedin": "https://www.linkedin.com/in/gianluca-savona/", "sito": "https://www.johnwhale.com", "anni_esperienza": 15, "sommario": "Analista di Processi e Sistemi con oltre 15 anni nel manifatturiero, specializzato nel tradurre esigenze di business complesse in soluzioni tecnologiche efficienti. Guardo alla trasformazione digitale (SAP S/4HANA, AI) come leva strategica per ottimizzare i flussi produttivi, ridurre i costi e aumentare la marginalità. Esperienza comprovata nella gestione di progetti critici come l'integrazione di sistemi ERP e software di pianificazione avanzata.", "esperienze": [{"periodo": "Gen 2013 – oggi", "ruolo": "Analista Tempi e Metodi / SAP Key-User (MM, PP)", "azienda": "Aesys S.p.A.", "luogo": "Seriate (BG)", "punti": ["Project leadership integrazione SAP–Cyberplan: gestito l'intero ciclo di vita dell'implementazione dello scheduler avanzato Cyberplan, coordinando team interfunzionali e fornitori esterni.", "Trasformazione digitale, migrazione SAP S/4HANA: membro chiave del team di progetto, responsabile dell'analisi e reingegnerizzazione dei processi MM e PP con flussi end-to-end coerenti.", "Ottimizzazione dei processi produttivi: identificati colli di bottiglia e inefficienze, implementate soluzioni di miglioramento continuo, definiti e monitorati KPI strategici."]}, {"periodo": "Gen 2011 – Dic 2012", "ruolo": "Pianificatore di produzione", "azienda": "Aesys S.p.A.", "luogo": "Seriate (BG)", "punti": ["Gestione e schedulazione della produzione meccanica, rispetto delle scadenze di consegna e ottimizzazione dei carichi di lavoro."]}, {"periodo": "Set 2007 – Ott 2009", "ruolo": "Impiegato tecnico", "azienda": "Aesys S.p.A.", "luogo": "Seriate (BG)", "punti": ["Gestione anagrafiche e codifica materiali in ERP, garantendo integrità e accuratezza dei dati."]}], "competenze": [{"categoria": "Sistemi ERP", "voci": ["SAP S/4HANA (progetto di migrazione)", "SAP ECC — moduli MM, PP (Key User)", "Integrazione sistemi"]}, {"categoria": "Analisi Dati", "voci": ["Python", "SQL", "Analisi e monitoraggio KPI", "Business Process Modeling", "Machine Learning"]}, {"categoria": "Project Management", "voci": ["Gestione progetti end-to-end", "Selezione e gestione fornitori"]}, {"categoria": "Tecnologie & AI", "voci": ["Modelli AI per lo sviluppo software", "JavaScript (base)", "HTML/CSS (base)"]}, {"categoria": "Produttività", "voci": ["Microsoft Excel (avanzato)", "Microsoft Office Suite (avanzato)", "Programmazione VBA per l'automazione"]}, {"categoria": "Soft Skills", "voci": ["Problem solving complesso", "Comunicazione strategica", "Leadership di progetto", "Team working"]}], "formazione": ["Google Advanced Data Analytics — Google (Coursera)", "SAP Business Analyst — SAP (Coursera)", "Google AI Essentials — Google (Coursera)", "Google Data Analytics — Google (Coursera)", "Google People Management Essentials — Google (Coursera)", "Google Stakeholder Management — Google (Coursera)", "Google Prompting Essentials — Google (Coursera)", "2006–2007 — Studi in Ingegneria Gestionale, Università degli Studi di Bergamo", "2001–2005 — Diploma Perito Industriale (Informatica), ITIS G. Marconi"], "lingue": [{"lingua": "Italiano", "livello": "Madrelingua"}, {"lingua": "Inglese", "livello": "Buono"}], "extra": "Cantante e chitarrista con esperienza in studio di registrazione e live performance: attività che coltiva creatività, disciplina e collaborazione in team."}, "news": [{"titolo": "Apple bets cheaper AI will woo small developers", "link": "https://techcrunch.com/2026/06/08/apple-bets-cheaper-ai-will-woo-small-developers/", "fonte": "TechCrunch", "argomento": "Tech", "sunto": "As AI experimentation grows more expensive, Apple is waiving cloud API costs for developers with fewer than 2 million first-time App Store downloads.", "pubblicato_il": "2026-06-08T20:53:55", "titolo_it": "Apple aiuta sviluppatori", "sunto_it": "Apple offre servizi cloud gratuiti ai piccoli sviluppatori. Ciò aiuterà a ridurre i costi di sviluppo", "tags": ["apple", "ai", "sviluppo"]}, {"titolo": "Waymo bought Apple’s self-driving car proving ground for $220M", "link": "https://techcrunch.com/2026/06/08/waymo-bought-apples-self-driving-car-proving-ground-for-220m/", "fonte": "TechCrunch", "argomento": "Tech", "sunto": "Waymo has acquired a massive 5,500-acre proving ground in Arizona owned by Route 14 Investment Partners LLC, a Delaware shell company associated with Apple, according to documents filed with Maricopa County. Waymo acquired the property, whi", "pubblicato_il": "2026-06-08T20:50:55", "titolo_it": "Waymo acquista terreno", "sunto_it": "Waymo ha acquistato un terreno di 5.500 acri per testare auto a guida autonoma. Il terreno era di proprietà di Apple", "tags": ["waymo", "apple", "auto"]}, {"titolo": "Microsoft’s open source tools were hacked to steal passwords of AI developers", "link": "https://techcrunch.com/2026/06/08/microsofts-open-source-tools-were-hacked-to-steal-passwords-of-ai-developers/", "fonte": "TechCrunch", "argomento": "Tech", "sunto": "Microsoft shut down dozens of GitHub code repositories for Azure and AI coding tools after a reported hack.", "pubblicato_il": "2026-06-08T20:03:44", "titolo_it": "Hacker attaccano Microsoft", "sunto_it": "Gli hacker hanno violato gli strumenti open source di Microsoft per rubare password di sviluppatori di intelligenza artificiale", "tags": ["microsoft", "hacker", "ai"]}, {"titolo": "WWDC 2026: Everything announced on Siri AI, iOS 27, Apple Intelligence and more", "link": "https://techcrunch.com/2026/06/08/wwdc-2026-everything-announced-on-siri-ai-os-27-apple-intelligence-and-more/", "fonte": "TechCrunch", "argomento": "Tech", "sunto": "Apple&#8217;s WWDC 2026 event kicked off this morning at 10 a.m. PT at Apple Park, starting a week full of expected announcements around Siri, iOS 27, Apple Intelligence and more, along with developer events and demos. This year&#8217;s eve", "pubblicato_il": "2026-06-08T19:41:32", "titolo_it": "WWDC 2026", "sunto_it": "Apple ha annunciato novità su Siri AI, iOS 27 e Apple Intelligence alla conferenza WWDC 2026", "tags": ["apple", "wwdc", "ai"]}, {"titolo": "Apple reveals new AI architecture built around Google Gemini models", "link": "https://www.macrumors.com/2026/06/08/apple-reveals-new-ai-architecture/", "fonte": "HackerNews", "argomento": "Dev", "sunto": "Article URL: https://www.macrumors.com/2026/06/08/apple-reveals-new-ai-architecture/\nComments URL: https://news.ycombinator.com/item?id=48450142\nPoints: 136\n# Comments: 102", "pubblicato_il": "2026-06-08T19:14:47", "titolo_it": "Nuova architettura AI", "sunto_it": "Apple ha rivelato una nuova architettura AI basata sui modelli Google Gemini", "tags": ["apple", "ai", "google"]}, {"titolo": "Switzerland wil have a referendum to cap population at 10M", "link": "https://www.admin.ch/en/sustainability-initiative", "fonte": "HackerNews", "argomento": "Dev", "sunto": "Article URL: https://www.admin.ch/en/sustainability-initiative\nComments URL: https://news.ycombinator.com/item?id=48450059\nPoints: 115\n# Comments: 228", "pubblicato_il": "2026-06-08T19:09:48", "titolo_it": "Referendum in Svizzera", "sunto_it": "La Svizzera terrà un referendum per limitare la popolazione a 10 milioni di abitanti", "tags": ["svizzera", "popolazione", "referendum"]}, {"titolo": "Siri AI", "link": "https://www.apple.com/apple-intelligence/", "fonte": "HackerNews", "argomento": "Dev", "sunto": "Article URL: https://www.apple.com/apple-intelligence/\nComments URL: https://news.ycombinator.com/item?id=48449084\nPoints: 171\n# Comments: 140", "pubblicato_il": "2026-06-08T18:17:53", "titolo_it": "Siri AI", "sunto_it": "Apple ha presentato la nuova versione di Siri AI con funzionalità avanzate", "tags": ["apple", "siri", "ai"]}, {"titolo": "Apple WWDC 2026", "link": "https://www.apple.com/apple-events/event-stream/", "fonte": "HackerNews", "argomento": "Dev", "sunto": "Article URL: https://www.apple.com/apple-events/event-stream/\nComments URL: https://news.ycombinator.com/item?id=48448106\nPoints: 194\n# Comments: 382", "pubblicato_il": "2026-06-08T17:14:24", "titolo_it": "WWDC 2026", "sunto_it": "La conferenza WWDC 2026 di Apple si è aperta con annunci su nuove tecnologie e funzionalità", "tags": ["apple", "wwdc", "tecnologia"]}], "offerte": {"items": [{"titolo": "SAP BTP Consultant", "azienda": "N2TWK", "location": "Lanza, Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 95, "link": "https://www.adzuna.it/details/5754094850?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "Business Analyst - Sanità Digitale - Milano e Roma", "azienda": "Arthur D Little S.p.A.", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 89, "link": "https://www.adzuna.it/details/5754464818?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "Data Analyst", "azienda": "NETwk", "location": "Lanza, Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 87, "link": "https://www.adzuna.it/details/5752868781?utm_medium=api&utm_source=e6da62c3", "data": "05/06", "oggi": false}, {"titolo": "Senior SAP Solution Architect, WWPS Global ISV Partners", "azienda": "Amazon", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 86, "link": "https://www.adzuna.it/details/5751624481?utm_medium=api&utm_source=e6da62c3", "data": "04/06", "oggi": false}, {"titolo": "Senior SAP Solution Architect, WWPS Global ISV Partners", "azienda": "AWS EMEA SARL  - G99", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 86, "link": "https://www.adzuna.it/details/5749975265?utm_medium=api&utm_source=e6da62c3", "data": "03/06", "oggi": false}, {"titolo": "Junior Data Analyst", "azienda": "Telema srl", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 85, "link": "https://www.adzuna.it/details/5747569116?utm_medium=api&utm_source=e6da62c3", "data": "01/06", "oggi": false}, {"titolo": "SAP Production Planning/execution Solution Architect (F/m/d)", "azienda": "HITACHI ENERGY SPAIN, S.A.U.", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 80, "link": "https://www.adzuna.it/details/5755470982?utm_medium=api&utm_source=e6da62c3", "data": "07/06", "oggi": false}, {"titolo": "BUSINESS ANALYST", "azienda": "Penta Soluzioni Informatiche s.r.l.", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 79, "link": "https://www.adzuna.it/details/5753762991?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "Business Analyst - Realtà Sanitaria di assistenza domiciliale", "azienda": "Randstad Italia S.p.A.", "location": "Monza, Provincia di Monza e Brianza", "ral_min": null, "ral_max": null, "ral": null, "score": 78, "link": "https://www.adzuna.it/details/5752484713?utm_medium=api&utm_source=e6da62c3", "data": "05/06", "oggi": false}, {"titolo": "Business Data Analyst", "azienda": "Corteva Agriscience", "location": "Sissa Trecasali, Provincia di Parma", "ral_min": null, "ral_max": null, "ral": null, "score": 78, "link": "https://www.adzuna.it/details/5752846702?utm_medium=api&utm_source=e6da62c3", "data": "05/06", "oggi": false}, {"titolo": "Data Analyst", "azienda": "", "location": "Lombardia, Italia", "ral_min": null, "ral_max": null, "ral": null, "score": 77, "link": "https://www.adzuna.it/details/5753975080?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "DATA ANALYST", "azienda": "Manpower Italia", "location": "Crema, Provincia di Cremona", "ral_min": null, "ral_max": null, "ral": null, "score": 77, "link": "https://www.adzuna.it/details/5745999023?utm_medium=api&utm_source=e6da62c3", "data": "30/05", "oggi": false}, {"titolo": "Business Analyst", "azienda": "BD", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 77, "link": "https://www.adzuna.it/details/5755480160?utm_medium=api&utm_source=e6da62c3", "data": "07/06", "oggi": false}, {"titolo": "BUSINESS ANALYST", "azienda": "Adecco Italia", "location": "Provincia di Milano, Lombardia", "ral_min": null, "ral_max": null, "ral": null, "score": 77, "link": "https://www.adzuna.it/details/5753657466?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "Data Scientist", "azienda": "LHH", "location": "Re, Provincia di Verbano-Cusio-Ossola", "ral_min": null, "ral_max": null, "ral": null, "score": 77, "link": "https://www.adzuna.it/details/5754868903?utm_medium=api&utm_source=e6da62c3", "data": "07/06", "oggi": false}, {"titolo": "Business Analyst / Consultant - Digital Public - Milano e Roma", "azienda": "Arthur D Little S.p.A.", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 76, "link": "https://www.adzuna.it/details/5754464793?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "Business Analyst Piattaforma Pass (Milano/ibrido)", "azienda": "Omicron Srl", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 75, "link": "https://www.adzuna.it/details/5754437317?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "DATA SCIENTIST", "azienda": "ADECCO", "location": "Pisogne, Provincia di Brescia", "ral_min": 30000, "ral_max": 40000, "ral": 35000, "score": 75, "link": "https://www.adzuna.it/details/5746883231?utm_medium=api&utm_source=e6da62c3", "data": "01/06", "oggi": false}, {"titolo": "Business Analyst Senior – Settore Assicurativo Vita", "azienda": "Vibe SRL", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 74, "link": "https://www.adzuna.it/details/5752866102?utm_medium=api&utm_source=e6da62c3", "data": "05/06", "oggi": false}, {"titolo": "Business Analyst I Special Projects - Originals", "azienda": "Balich Wonder Studio s.r.l", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 73, "link": "https://www.adzuna.it/details/5756254626?utm_medium=api&utm_source=e6da62c3", "data": "08/06", "oggi": true}, {"titolo": "Business Analyst", "azienda": "Key Partner", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 71, "link": "https://www.adzuna.it/details/5754453660?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "DATA SCIENTIST", "azienda": "Adecco Italia", "location": "Pisogne, Provincia di Brescia", "ral_min": null, "ral_max": null, "ral": null, "score": 71, "link": "https://www.adzuna.it/details/5753657647?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "SAP EWM Consultant – S/4HANA", "azienda": "Gielle Informatica Recruiting", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 67, "link": "https://www.adzuna.it/details/5741879325?utm_medium=api&utm_source=e6da62c3", "data": "27/05", "oggi": false}, {"titolo": "Senior Data Analyst (M/F/D)", "azienda": "Flix SE", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 67, "link": "https://www.adzuna.it/details/5750544393?utm_medium=api&utm_source=e6da62c3", "data": "03/06", "oggi": false}, {"titolo": "Esperto Sistemi Gis / Data Analyst - Tempo", "azienda": "A2A S.p.A.", "location": "Lodi, Provincia di Lodi", "ral_min": null, "ral_max": null, "ral": null, "score": 66, "link": "https://www.adzuna.it/details/5754479867?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "Salesforce Expert", "azienda": "Capgemini", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 66, "link": "https://www.adzuna.it/details/5754479821?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "Business Analyst Apprentice", "azienda": "Ecolab Inc.", "location": "Vimercate, Provincia di Monza e Brianza", "ral_min": null, "ral_max": null, "ral": null, "score": 65, "link": "https://www.adzuna.it/details/5754435984?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "Business Functional Analyst", "azienda": "ABB", "location": "Bergamo, Provincia di Bergamo", "ral_min": null, "ral_max": null, "ral": null, "score": 64, "link": "https://www.adzuna.it/details/5755470816?utm_medium=api&utm_source=e6da62c3", "data": "07/06", "oggi": false}, {"titolo": "Data Analyst - Supply Chain", "azienda": "Kanadevia Inova", "location": "Provincia di Milano, Lombardia", "ral_min": null, "ral_max": null, "ral": null, "score": 63, "link": "https://www.adzuna.it/details/5743022434?utm_medium=api&utm_source=e6da62c3", "data": "28/05", "oggi": false}, {"titolo": "MARKETING DATA ANALYST - Ottimo Inglese -", "azienda": "Orienta", "location": "Provincia di Milano, Lombardia", "ral_min": 33600, "ral_max": 43200, "ral": 38400, "score": 62, "link": "https://www.adzuna.it/details/5753653978?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "Organization & Business Process Transformation Analyst", "azienda": "Esselunga", "location": "Pioltello, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 62, "link": "https://www.adzuna.it/details/5754430220?utm_medium=api&utm_source=e6da62c3", "data": "06/06", "oggi": false}, {"titolo": "IT Business Analyst – BANCOMAT Pay & Digital Payments", "azienda": "eglue", "location": "Pavia, Provincia di Pavia", "ral_min": 60000, "ral_max": 60000, "ral": 60000, "score": 60, "link": "https://www.adzuna.it/details/5756029665?utm_medium=api&utm_source=e6da62c3", "data": "08/06", "oggi": true}], "stats": {"n": 32, "n_con_ral": 3, "ral_media": 44467, "ral_mediana": 38400, "ral_max": 60000, "match_medio": 75, "mostrate": 32, "match_min": 60}}};</script>
+</head>
+
+<body x-data="labApp()" x-init="init()">
+
+  <canvas id="bg-canvas"></canvas>
+  <div class="hero-overlay"></div>
+
+  <!-- Header fisso — stile nav johnwhale.com -->
+  <header class="jw-header">
+    <div class="container" style="padding-top:0;padding-bottom:0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+        <a href="https://www.johnwhale.com" target="_blank" rel="noopener" class="nav-logo">
+          <span class="nav-dot"></span> JW · MINILAB
+        </a>
+        <div class="nav-right">
+          <button class="weather-pill" @click="document.getElementById('meteo').scrollIntoView({behavior:'smooth',block:'center'})" x-cloak>
+            <span x-text="d.meteo.icon"></span>
+            <span x-text="d.meteo.temp"></span>
+          </button>
+          <button class="nav-cta" @click="showCv = true">📄 CV</button>
+          <span class="meta-mono nav-date" x-text="'agg. ' + d.generato_il"></span>
+          <div class="nav-social">
+            <a href="https://github.com/johnwhaledev/" target="_blank" rel="noopener" aria-label="GitHub">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+            </a>
+            <a href="https://open.spotify.com/intl-it/artist/7etRtq3G1vv4HOwIO29VgK" target="_blank" rel="noopener" aria-label="Spotify">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/gianluca-savona/" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43c-1.14 0-2.06-.93-2.06-2.07 0-1.14.92-2.06 2.06-2.06 1.14 0 2.06.92 2.06 2.06 0 1.14-.92 2.07-2.06 2.07zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.27V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+            </a>
+            <a href="mailto:hi@johnwhale.com" aria-label="Email">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container content-wrapper" style="padding-top:4.5rem;" x-cloak>
+
+    <div class="main-grid">
+
+      <!-- ── Colonna sinistra: meteo + news ────────────────── -->
+      <div class="col">
+
+        <div class="panel" id="meteo">
+          <div class="panel-title">Meteo Italia — 3 giorni × 4 fasce · clicca una regione</div>
+          <div class="meteo-modal-layout">
+            <div class="meteo-modal-map">
+              <svg class="italy-map" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 440"
+                   @click="const p=$event.target.closest('path'); if(p){ const r=regioni.find(x=>x.id===p.dataset.id); if(r) selectRegion(r); }"
+                   @mouseover="const p=$event.target.closest('path'); if(p){ document.querySelectorAll('.italy-map path').forEach(x=>x.classList.remove('selected')); p.classList.add('selected'); }"
+                   @mouseleave="document.querySelectorAll('.italy-map path').forEach(x=>{ x.classList.remove('selected'); if(meteoSelected && x.dataset.id===meteoSelected.id) x.classList.add('selected'); })">
+                <path id="r-pie" data-id="pie" data-name="Piemonte" data-lat="45.063" data-lon="7.671" d="M 2,42 L 24,42 L 23,64 L 47,63 L 48,148 L 2,148 Z"/>
+                <path id="r-vda" data-id="vda" data-name="Valle d'Aosta" data-lat="45.737" data-lon="7.315" d="M 4,42 L 24,42 L 23,64 L 4,63 Z"/>
+                <path id="r-lig" data-id="lig" data-name="Liguria" data-lat="44.405" data-lon="8.946" d="M 16,110 L 48,104 L 72,110 L 70,132 L 16,130 Z"/>
+                <path id="r-lom" data-id="lom" data-name="Lombardia" data-lat="45.464" data-lon="9.190" d="M 37,20 L 95,16 L 97,98 L 37,100 Z"/>
+                <path id="r-taa" data-id="taa" data-name="Trentino-A.A." data-lat="46.070" data-lon="11.119" d="M 70,2 L 120,2 L 118,44 L 95,52 L 70,52 Z"/>
+                <path id="r-ven" data-id="ven" data-name="Veneto" data-lat="45.438" data-lon="12.327" d="M 95,44 L 148,30 L 150,76 L 130,110 L 97,108 Z"/>
+                <path id="r-fvg" data-id="fvg" data-name="Friuli-V.G." data-lat="45.649" data-lon="13.777" d="M 130,28 L 162,28 L 160,90 L 130,90 Z"/>
+                <path id="r-emr" data-id="emr" data-name="Emilia-Romagna" data-lat="44.493" data-lon="11.343" d="M 37,100 L 130,98 L 125,128 L 103,144 L 37,144 Z"/>
+                <path id="r-tos" data-id="tos" data-name="Toscana" data-lat="43.771" data-lon="11.254" d="M 34,142 L 103,142 L 98,170 L 90,200 L 66,210 L 34,200 Z"/>
+                <path id="r-mar" data-id="mar" data-name="Marche" data-lat="43.616" data-lon="13.516" d="M 103,132 L 145,124 L 142,190 L 103,190 Z"/>
+                <path id="r-umb" data-id="umb" data-name="Umbria" data-lat="43.110" data-lon="12.389" d="M 87,168 L 130,165 L 127,214 L 89,214 Z"/>
+                <path id="r-laz" data-id="laz" data-name="Lazio" data-lat="41.894" data-lon="12.482" d="M 65,193 L 130,190 L 127,254 L 87,264 L 65,254 Z"/>
+                <path id="r-abr" data-id="abr" data-name="Abruzzo" data-lat="42.354" data-lon="13.395" d="M 103,178 L 150,172 L 147,230 L 105,230 Z"/>
+                <path id="r-mol" data-id="mol" data-name="Molise" data-lat="41.562" data-lon="14.656" d="M 116,224 L 158,220 L 155,255 L 118,255 Z"/>
+                <path id="r-cam" data-id="cam" data-name="Campania" data-lat="40.852" data-lon="14.268" d="M 88,248 L 160,243 L 155,282 L 120,298 L 90,294 Z"/>
+                <path id="r-bas" data-id="bas" data-name="Basilicata" data-lat="40.639" data-lon="15.806" d="M 120,272 L 174,265 L 170,318 L 123,318 Z"/>
+                <path id="r-pug" data-id="pug" data-name="Puglia" data-lat="41.117" data-lon="16.872" d="M 150,174 L 198,170 L 196,242 L 190,272 L 182,294 L 172,326 L 158,338 L 148,320 L 153,282 L 150,244 Z"/>
+                <path id="r-cal" data-id="cal" data-name="Calabria" data-lat="38.910" data-lon="16.587" d="M 125,302 L 176,298 L 180,338 L 163,390 L 140,398 L 120,382 L 128,338 Z"/>
+                <path id="r-sic" data-id="sic" data-name="Sicilia" data-lat="38.114" data-lon="13.361" d="M 66,358 L 178,352 L 174,402 L 106,414 L 73,400 Z"/>
+                <path id="r-sar" data-id="sar" data-name="Sardegna" data-lat="39.223" data-lon="9.122" d="M 10,256 L 60,250 L 66,305 L 62,385 L 18,380 L 7,318 Z"/>
+                <g pointer-events="none" text-anchor="middle" font-family="Ubuntu Mono, monospace" fill="rgba(255,255,255,0.6)">
+                  <text x="14"  y="55"  font-size="3.8">VdA</text>
+                  <text x="25"  y="100" font-size="5.5">Piemonte</text>
+                  <text x="44"  y="120" font-size="5">Liguria</text>
+                  <text x="67"  y="61"  font-size="5.5">Lombardia</text>
+                  <text x="95"  y="30"  font-size="5">Trentino</text>
+                  <text x="124" y="73"  font-size="5.5">Veneto</text>
+                  <text x="146" y="62"  font-size="4.5">Friuli</text>
+                  <text x="83"  y="125" font-size="5.5">Emilia-R.</text>
+                  <text x="66"  y="179" font-size="5.5">Toscana</text>
+                  <text x="124" y="160" font-size="5">Marche</text>
+                  <text x="108" y="193" font-size="5">Umbria</text>
+                  <text x="97"  y="227" font-size="5.5">Lazio</text>
+                  <text x="126" y="205" font-size="5">Abruzzo</text>
+                  <text x="137" y="240" font-size="3.8">Molise</text>
+                  <text x="122" y="273" font-size="5">Campania</text>
+                  <text x="147" y="295" font-size="4.2">Basilicata</text>
+                  <text x="174" y="253" font-size="5.5">Puglia</text>
+                  <text x="151" y="349" font-size="5">Calabria</text>
+                  <text x="122" y="385" font-size="5.5">Sicilia</text>
+                  <text x="37"  y="321" font-size="5.5">Sardegna</text>
+                </g>
+              </svg>
+            </div>
+            <div class="meteo-modal-panel">
+              <template x-if="meteoSelected">
+                <div>
+                  <div class="meteo-region-title" x-text="meteoSelected.name"></div>
+                  <div class="meteo-region-sub" x-text="'Capoluogo: ' + meteoSelected.capital"></div>
+                </div>
+              </template>
+              <div x-show="meteoLoading" style="color:var(--jw-muted);font-size:0.85rem;" aria-busy="true">Caricamento previsioni...</div>
+              <template x-if="!meteoLoading && meteoForecast">
+                <table class="meteo-table">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <template x-for="g in meteoForecast" :key="g.date"><th x-text="g.label"></th></template>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template x-for="(flabel, fi) in ['🌙 Notte','🌄 Mattina','☀️ Pomeriggio','🌆 Sera']" :key="fi">
+                      <tr>
+                        <td x-text="flabel"></td>
+                        <template x-for="g in meteoForecast" :key="g.date + fi">
+                          <td>
+                            <span x-text="g.fasce[fi].emoji"></span>
+                            <span class="meteo-temp" x-text="(g.fasce[fi].temp ?? '–') + '°'"></span>
+                            <span class="meteo-umid" x-show="g.fasce[fi].umid != null" x-text="'💦 ' + g.fasce[fi].umid + '%'"></span>
+                            <span class="meteo-rain" x-show="g.fasce[fi].rain > 20" x-text="'☔ ' + g.fasce[fi].rain + '%'"></span>
+                          </td>
+                        </template>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-label">News tech / AI</div>
+        <div class="empty-state" x-show="!news.length">Nessuna notizia disponibile in questo build.</div>
+        <div class="rows" x-show="news.length">
+          <template x-for="(n, i) in news" :key="i">
+            <article class="row-item" x-show="i < 8 || newsEspanse">
+              <div class="row-top">
+                <span class="badge tag-green" style="font-size:0.68rem;" x-text="n.argomento"></span>
+                <span class="meta-mono" x-text="n.fonte"></span>
+                <a class="apri-link" :href="n.link" target="_blank" rel="noopener" style="margin-left:auto;">Apri →</a>
+              </div>
+              <div class="row-title"><a :href="n.link" target="_blank" rel="noopener" x-text="n.titolo_it || n.titolo"></a></div>
+              <p class="row-sub" x-text="n.sunto_it || n.sunto"></p>
+              <div class="chip-row" x-show="n.tags && n.tags.length">
+                <template x-for="t in (n.tags || [])" :key="t">
+                  <span class="chip-kw" style="color:var(--jw-muted);border-color:var(--jw-border);" x-text="t"></span>
+                </template>
+              </div>
+            </article>
+          </template>
+        </div>
+        <button class="toggle-btn" x-show="news.length > 8" @click="newsEspanse = !newsEspanse">
+          <span x-text="newsEspanse ? '▴ Mostra meno' : ('▾ Mostra altre ' + (news.length - 8) + ' news')"></span>
+        </button>
+      </div>
+
+      <!-- ── Colonna destra: KPI + offerte ─────────────────── -->
+      <div class="col">
+
+        <div class="panel">
+          <div class="panel-title">Offerte affini · KPI RAL</div>
+          <div class="kpi-grid">
+            <div class="kpi"><div class="kpi-val" x-text="stats.ral_media ? fmtRal(stats.ral_media) : 'n/d'"></div><div class="kpi-lbl">RAL media</div></div>
+            <div class="kpi"><div class="kpi-val" x-text="stats.ral_mediana ? fmtRal(stats.ral_mediana) : 'n/d'"></div><div class="kpi-lbl">RAL mediana</div></div>
+            <div class="kpi"><div class="kpi-val" x-text="stats.ral_max ? fmtRal(stats.ral_max) : 'n/d'"></div><div class="kpi-lbl">RAL max</div></div>
+            <div class="kpi"><div class="kpi-val" x-text="(stats.match_medio || 0) + '%'"></div><div class="kpi-lbl">Match medio</div></div>
+          </div>
+        </div>
+
+        <div class="section-label">Offerte entro 100 km da Bergamo</div>
+        <p class="section-note">
+          Ordinate per <strong style="color:var(--jw-accent);">match semantico</strong> col mio profilo (e5-large):
+          <span x-text="stats.n || 0"></span> offerte con affinità ≥ <span x-text="stats.match_min || 55"></span>%.
+        </p>
+        <div class="empty-state" x-show="!offerte.length">Nessuna offerta sopra soglia (o manca la chiave Adzuna).</div>
+        <div class="rows" x-show="offerte.length">
+          <template x-for="(o, i) in offerte" :key="i">
+            <article class="row-item" x-show="i < 8 || offerteEspanse">
+              <div class="row-top">
+                <span class="score-tag" x-show="o.score != null" :style="'color:'+scoreColor(o.score)" x-text="o.score + '%'"></span>
+                <span class="row-title" style="flex:1;margin:0;"><a :href="o.link" target="_blank" rel="noopener" x-text="o.titolo"></a></span>
+                <span class="badge tag-red" x-show="o.oggi" style="font-size:0.62rem;text-transform:uppercase;">oggi</span>
+              </div>
+              <div class="row-top" style="margin-top:0.35rem;">
+                <span class="meta-mono">
+                  <span x-text="o.azienda"></span><span x-show="o.location" x-text="' · ' + o.location"></span>
+                  <span x-show="ralRange(o)" style="color:var(--jw-accent);" x-text="' · ' + ralRange(o)"></span>
+                </span>
+                <span class="meta-mono" style="margin-left:auto;" x-show="o.data" x-text="o.data"></span>
+                <a class="apri-link" :href="o.link" target="_blank" rel="noopener">Apri offerta →</a>
+              </div>
+            </article>
+          </template>
+        </div>
+        <button class="toggle-btn" x-show="offerte.length > 8" @click="offerteEspanse = !offerteEspanse">
+          <span x-text="offerteEspanse ? '▴ Mostra meno' : ('▾ Mostra altre ' + (offerte.length - 8) + ' offerte')"></span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Footer — identico a johnwhale.com -->
+    <footer class="lab-footer">
+      <div>
+        <div class="footer-mark">JOHN <span>W</span>HALE</div>
+        <div class="footer-sub">Economic Ways · johnwhale.com · Bergamo, IT · miniLab</div>
+      </div>
+      <div class="footer-links">
+        <a href="https://www.johnwhale.com/#about" target="_blank" rel="noopener">Chi sono</a>
+        <a href="https://www.johnwhale.com/#philosophy" target="_blank" rel="noopener">Economic Ways</a>
+        <a href="https://www.johnwhale.com/#consulting" target="_blank" rel="noopener">Consulenza</a>
+        <a href="https://www.johnwhale.com/privacy.html" target="_blank" rel="noopener">Privacy</a>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/johnwhaledev/" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://open.spotify.com/intl-it/artist/7etRtq3G1vv4HOwIO29VgK" target="_blank" rel="noopener">Spotify</a>
+        <a href="https://www.linkedin.com/in/gianluca-savona/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:hi@johnwhale.com">hi@johnwhale.com</a>
+      </div>
+    </footer>
+    <div class="footer-copy">JOHN WHALE © 2026 — Economic Ways.</div>
+
+  </main>
+
+  <!-- ── Modale CV ─────────────────────────────────────────── -->
+  <div class="meteo-modal-overlay" x-show="showCv" x-cloak @click.self="showCv=false" @keydown.escape.window="showCv=false">
+    <div class="meteo-modal" style="max-width:680px;">
+      <button class="meteo-modal-close" @click="showCv=false">✕</button>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.6rem;">
+        <div>
+          <h3 style="margin:0;color:var(--jw-white);font-size:1.3rem;" x-text="cv.nome"></h3>
+          <div style="color:var(--jw-accent);font-family:'Ubuntu Mono',monospace;font-size:0.85rem;margin-top:0.2rem;" x-text="cv.ruolo"></div>
+        </div>
+      </div>
+      <p style="color:var(--jw-text);font-size:0.92rem;line-height:1.6;margin:0.9rem 0 0;" x-text="cv.sommario"></p>
+      <div class="meta-mono" style="margin-top:0.8rem;font-size:0.8rem;">
+        <span x-text="cv.location"></span> ·
+        <a :href="'mailto:' + cv.email" style="color:var(--jw-accent);text-decoration:none;" x-text="cv.email"></a>
+        <template x-if="cv.linkedin"> · <a :href="cv.linkedin" target="_blank" rel="noopener" style="color:var(--jw-accent);text-decoration:none;">LinkedIn</a></template>
+      </div>
+
+      <div class="cv-block">
+        <h5>Esperienze</h5>
+        <template x-for="(e, i) in (cv.esperienze || [])" :key="i">
+          <div class="cv-exp">
+            <div class="cv-exp-head">
+              <span class="cv-exp-role" x-text="e.ruolo"></span>
+              <span class="cv-exp-when" x-text="e.periodo"></span>
+            </div>
+            <div class="cv-exp-org"><span x-text="e.azienda"></span><span x-show="e.luogo" x-text="' · ' + e.luogo"></span></div>
+            <ul><template x-for="(p, j) in (e.punti || [])" :key="j"><li x-text="p"></li></template></ul>
+          </div>
+        </template>
+      </div>
+
+      <div class="cv-block">
+        <h5>Competenze</h5>
+        <template x-for="(c, i) in (cv.competenze || [])" :key="i">
+          <div class="cv-comp">
+            <div class="cv-comp-cat" x-text="c.categoria"></div>
+            <div class="chip-row" style="margin-top:0;">
+              <template x-for="v in (c.voci || [])" :key="v">
+                <span class="chip-kw" style="color:var(--jw-accent);border-color:rgba(46,204,113,0.4);" x-text="v"></span>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div class="cv-block">
+        <h5>Istruzione & Certificazioni</h5>
+        <ul class="cv-list"><template x-for="(f, i) in (cv.formazione || [])" :key="i"><li x-text="f"></li></template></ul>
+      </div>
+
+      <div class="cv-block">
+        <h5>Lingue</h5>
+        <div class="chip-row" style="margin-top:0;">
+          <template x-for="(l, i) in (cv.lingue || [])" :key="i">
+            <span class="chip-kw" style="color:var(--jw-muted);border-color:var(--jw-border);" x-text="l.lingua + ' — ' + l.livello"></span>
+          </template>
+        </div>
+      </div>
+
+      <div class="cv-block" x-show="cv.extra">
+        <h5>Altro</h5>
+        <p style="font-size:0.88rem;color:var(--jw-muted);line-height:1.6;margin:0;" x-text="cv.extra"></p>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,453 @@
+/* Tema chiaro — palette JW */
+[data-theme="light"] {
+  --jw-bg: #f0f4f1;
+  --jw-bg2: #e4ebe6;
+  --jw-bg3: #d8e2da;
+  --jw-border: #b0c4b8;
+  --jw-text: #2c3e35;
+  --jw-muted: #6b8f79;
+  --jw-accent: #1fa85a;
+  --jw-accent-dark: #178a48;
+  --jw-white: #0d1518;
+
+  --pico-background-color: var(--jw-bg);
+  --pico-color: var(--jw-text);
+  --pico-h1-color: var(--jw-white);
+  --pico-h2-color: var(--jw-white);
+  --pico-h3-color: var(--jw-white);
+  --pico-h4-color: var(--jw-white);
+  --pico-h5-color: var(--jw-white);
+  --pico-h6-color: var(--jw-white);
+  --pico-primary: var(--jw-accent);
+  --pico-primary-hover: var(--jw-accent-dark);
+  --pico-primary-border: var(--jw-accent);
+  --pico-card-background-color: var(--jw-bg3);
+  --pico-border-color: var(--jw-border);
+  --pico-muted-color: var(--jw-muted);
+}
+
+/* Palette da JW_BrandGuide.md - Night Terminal */
+:root {
+  --jw-bg: #0D1518;
+  --jw-bg2: #121C20;
+  --jw-bg3: #162028;
+  --jw-border: #1E293B;
+  --jw-text: #D1D5DB;
+  --jw-muted: #4B5563;
+  --jw-white: #F1F5F9;
+  --jw-accent: #2ECC71;
+  --jw-accent-dark: #27AE60;
+
+  /* Pico CSS Overrides */
+  --pico-background-color: var(--jw-bg);
+  --pico-color: var(--jw-text);
+  --pico-h1-color: var(--jw-white);
+  --pico-h2-color: var(--jw-white);
+  --pico-h3-color: var(--jw-white);
+  --pico-h4-color: var(--jw-white);
+  --pico-h5-color: var(--jw-white);
+  --pico-h6-color: var(--jw-white);
+  --pico-primary: var(--jw-accent);
+  --pico-primary-hover: var(--jw-accent-dark);
+  --pico-primary-border: var(--jw-accent);
+  --pico-card-background-color: var(--jw-bg3);
+  --pico-border-color: var(--jw-border);
+  --pico-muted-color: var(--jw-muted);
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+  background-color: var(--jw-bg);
+  transition: background .3s, color .3s;
+}
+
+/* Header fisso con supporto tema */
+.jw-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  background: rgba(13,21,24,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--jw-border);
+  padding: 0.5rem 0;
+}
+[data-theme="light"] .jw-header {
+  background: rgba(240,244,241,0.92);
+}
+
+/* Hero overlay tema chiaro */
+[data-theme="light"] .hero-overlay {
+  background: linear-gradient(to top, rgba(240,244,241,.98) 0%, rgba(240,244,241,.65) 45%, rgba(240,244,241,.2) 100%);
+}
+
+/* Stat pills */
+.stat-pill {
+  display: flex;
+  flex-direction: column;
+  background: var(--jw-bg3);
+  border: 1px solid var(--jw-border);
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  min-width: 80px;
+}
+.stat-label {
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--jw-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.stat-value {
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 1rem;
+  color: var(--jw-accent);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Charts */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 640px) {
+  .charts-grid { grid-template-columns: 1fr; }
+}
+.chart-box {
+  background: var(--jw-bg3);
+  border: 1px solid var(--jw-border);
+  border-radius: 8px;
+  padding: 1rem;
+}
+.chart-label {
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--jw-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.65rem;
+}
+
+/* Toggle tema */
+.theme-toggle-btn {
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 0.9rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid var(--jw-border);
+  background: transparent;
+  color: var(--jw-muted);
+  transition: color .15s, border-color .15s;
+  line-height: 1;
+}
+.theme-toggle-btn:hover {
+  color: var(--jw-accent);
+  border-color: rgba(46,204,113,0.4);
+}
+
+body {
+  font-family: "Ubuntu", system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  pointer-events: none;
+}
+
+.hero-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background: linear-gradient(to top, rgba(13,21,24,0.98) 0%, rgba(13,21,24,0.7) 45%, rgba(13,21,24,0.3) 100%);
+  pointer-events: none;
+}
+
+.content-wrapper {
+  position: relative;
+  z-index: 10;
+  padding-top: 1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Ubuntu", system-ui, -apple-system, sans-serif;
+  font-weight: 300;
+}
+
+/* Identità e badge con Ubuntu Mono */
+.badge, .tag, .brand-text {
+  font-family: "Ubuntu Mono", monospace;
+  font-weight: 700;
+}
+
+/* Card styling specifico */
+article.card {
+  background-color: var(--jw-bg3);
+  border: 1px solid var(--jw-border);
+  border-radius: 10px;
+  transition: border-color 0.2s ease-in-out;
+  height: 100%;
+}
+
+article.card:hover {
+  border-color: rgba(46, 204, 113, 0.35); /* jw_accent a 35% */
+}
+
+/* Badge Tag */
+.badge.tag-green {
+  background-color: rgba(46, 204, 113, 0.12);
+  border: 1px solid rgba(46, 204, 113, 0.25);
+  color: var(--jw-accent);
+  border-radius: 2px;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.8rem;
+}
+
+/* Header style */
+header {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--jw-border);
+  margin-bottom: 2rem;
+}
+
+.weather-quote-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.quote-text {
+  font-style: italic;
+  color: var(--jw-muted);
+  font-size: 0.9rem;
+}
+
+.editorial-box {
+  border-left: 4px solid var(--jw-accent);
+  padding-left: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Bento grid — minmax 360px → 3 colonne su desktop standard */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ── Ticker digest topic ─────────────────────────────────── */
+.ticker-wrapper {
+  overflow: hidden;
+  border-top: 1px solid var(--jw-border);
+  border-bottom: 1px solid var(--jw-border);
+  background: var(--jw-bg2);
+  padding: 0.45rem 0;
+  margin-bottom: 1.5rem;
+  cursor: default;
+  user-select: none;
+}
+.ticker-track {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  will-change: transform;
+}
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 1.5rem;
+  font-size: 0.83rem;
+}
+.ticker-text {
+  color: var(--jw-muted);
+  font-style: italic;
+}
+.ticker-sep {
+  color: var(--jw-border);
+  padding-left: 1rem;
+}
+
+.card-title {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-title a {
+  text-decoration: none;
+  color: var(--jw-white);
+  transition: color 0.2s;
+}
+
+.card-title a:hover {
+  color: var(--jw-accent);
+}
+
+.card-summary {
+  margin-top: 1rem;
+  padding-left: 1.2rem;
+}
+.card-summary li {
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  color: var(--jw-text);
+}
+
+/* ── Weather pill in header ──────────────────────────────── */
+.weather-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--jw-bg3);
+  border: 1px solid var(--jw-border);
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--jw-text);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.weather-pill:hover {
+  border-color: rgba(46,204,113,0.4);
+  color: var(--jw-white);
+}
+
+/* ── Meteo modal overlay ─────────────────────────────────── */
+.meteo-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.meteo-modal {
+  background: var(--jw-bg2);
+  border: 1px solid var(--jw-border);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  position: relative;
+}
+.meteo-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--jw-muted);
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0.2rem 0.5rem;
+}
+.meteo-modal-close:hover { color: var(--jw-white); }
+
+/* ── Credits modal ───────────────────────────────────────── */
+.credits-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(13,21,24,0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.credits-modal {
+  background: var(--jw-bg3);
+  border: 1px solid var(--jw-border);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 2rem;
+  position: relative;
+}
+
+/* ── Italy SVG map ───────────────────────────────────────── */
+.italy-map {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+}
+.italy-map path {
+  fill: var(--jw-bg3);
+  stroke: var(--jw-border);
+  stroke-width: 1;
+  cursor: pointer;
+  transition: fill 0.15s;
+}
+.italy-map path:hover,
+.italy-map path.selected {
+  fill: rgba(46,204,113,0.25);
+  stroke: var(--jw-accent);
+}
+
+/* ── Modal forecast table ────────────────────────────────── */
+.meteo-modal-layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.meteo-modal-map { flex: 0 0 auto; }
+.meteo-modal-panel { flex: 1; min-width: 220px; }
+.meteo-region-title {
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 1rem;
+  color: var(--jw-white);
+  margin-bottom: 0.25rem;
+}
+.meteo-region-sub {
+  font-size: 0.78rem;
+  color: var(--jw-muted);
+  margin-bottom: 1.2rem;
+}
+.meteo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.meteo-table th {
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--jw-accent);
+  text-align: center;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid var(--jw-border);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.meteo-table td {
+  text-align: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--jw-border);
+  color: var(--jw-text);
+}
+.meteo-table td:first-child {
+  text-align: left;
+  color: var(--jw-muted);
+  font-size: 0.78rem;
+  font-family: 'Ubuntu Mono', monospace;
+  white-space: nowrap;
+}
+.meteo-table tr:last-child td { border-bottom: none; }
+.meteo-temp { font-weight: 600; font-size: 0.9rem; }
+.meteo-rain { font-size: 0.68rem; color: #74b9ff; display: block; }
