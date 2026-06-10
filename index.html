@@ -29,7 +29,10 @@
 <meta name="twitter:description" content="16+ anni in manifatturiero SAP. Consulenza SAP S/4HANA, data science e tool interni per PMI industriali. Bergamo, IT.">
 <meta name="twitter:image" content="https://www.johnwhale.com/assets/logo_jw_512.png">
 
-<link rel="icon" href="assets/favicon.ico">
+<link rel="icon" type="image/png" sizes="96x96" href="assets/favicon-96.png">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48.png">
+<link rel="icon" href="assets/favicon.ico" sizes="16x16">
+<link rel="apple-touch-icon" href="assets/logo_jw_512.png">
 
 <!-- Schema.org -->
 <script type="application/ld+json">
@@ -100,7 +103,7 @@ nav a:hover { color: var(--accent); }
 .nav-social { display: flex; align-items: center; gap: .75rem; }
 .nav-social a { color: var(--muted); display: flex; align-items: center; transition: color .15s; }
 .nav-social a:hover { color: var(--accent); }
-@media(max-width:768px) { nav ul { display: none; } .nav-social { display: none; } }
+@media(max-width:768px) { nav ul { gap: .9rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; } nav ul::-webkit-scrollbar { display: none; } nav a { font-size: 12px; white-space: nowrap; } .nav-social { display: none; } }
 
 /* ── HERO ── */
 #hero { position: relative; min-height: 82vh; display: flex; flex-direction: column; justify-content: center; padding-bottom: 5rem; overflow: hidden; }
