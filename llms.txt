@@ -1,0 +1,27 @@
+# John Whale — johnwhale.com
+
+> Gianluca Savona (John Whale): analista di processi e sistemi con 15+ anni nel
+> manifatturiero (SAP S/4HANA, moduli MM/PP), costruisce strumenti AI local-first
+> per processi aziendali. Filosofia "Economic Ways": la soluzione più semplice che
+> funziona, offline-first, zero cloud a pagamento, dati che restano in locale.
+
+## Pagine principali
+
+- [Home](https://www.johnwhale.com/): profilo, competenze, progetti
+- [miniLab](https://www.johnwhale.com/miniLab/): vetrina live autogenerata — meteo,
+  news AI curate, offerte di lavoro ordinate per match semantico col CV (embedding
+  e5-large offline)
+- [Privacy](https://www.johnwhale.com/privacy.html)
+
+## Competenze chiave
+
+Analisi e reingegnerizzazione processi produttivi, SAP S/4HANA (MM/PP), Python,
+FastAPI, DuckDB/Polars, semantic search e RAG offline (fastembed e5), LLM locali
+(Ollama), automazioni GitHub Actions, sviluppo AI-assistito con governance
+documentata (library riusabile, agente di manutenzione codebase).
+
+## Contatti
+
+- Sito: https://www.johnwhale.com
+- GitHub: https://github.com/johnwhaledev
+- LinkedIn: https://www.linkedin.com/in/gianluca-savona/
