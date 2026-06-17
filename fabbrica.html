@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La fabbrica di software — Gianluca Savona | John Whale</title>
+<meta name="description" content="Non scrivo codice. Gestisco una fabbrica che lo produce. Come ho applicato il mestiere di analista tempi e metodi ai miei progetti software.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://johnwhale.com/fabbrica.html">
+
+<!-- Geo -->
+<meta name="geo.region" content="IT-BG">
+<meta name="geo.placename" content="Bergamo, Italy">
+<meta name="geo.position" content="45.6983;9.6773">
+<meta name="ICBM" content="45.6983, 9.6773">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://johnwhale.com/fabbrica.html">
+<meta property="og:site_name" content="John Whale">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="La fabbrica di software — John Whale">
+<meta property="og:description" content="Non scrivo codice. Gestisco una fabbrica che lo produce. Come ho applicato il mestiere di analista tempi e metodi ai miei progetti software.">
+<meta property="og:image" content="https://johnwhale.com/assets/fabbrica/1.png">
+<meta property="article:author" content="Gianluca Savona">
+<meta property="article:published_time" content="2026-06-01">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="La fabbrica di software — John Whale">
+<meta name="twitter:description" content="Non scrivo codice. Gestisco una fabbrica che lo produce. Come ho applicato il mestiere di analista tempi e metodi ai miei progetti software.">
+<meta name="twitter:image" content="https://johnwhale.com/assets/fabbrica/1.png">
+
+<link rel="icon" href="assets/favicon.ico">
+
+<!-- Schema.org -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "La fabbrica di software",
+  "description": "Non scrivo codice. Gestisco una fabbrica che lo produce.",
+  "author": {
+    "@type": "Person",
+    "name": "Gianluca Savona",
+    "alternateName": "John Whale",
+    "url": "https://johnwhale.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "John Whale",
+    "url": "https://johnwhale.com"
+  },
+  "datePublished": "2026-06-01",
+  "url": "https://johnwhale.com/fabbrica.html",
+  "image": "https://johnwhale.com/assets/fabbrica/1.png"
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #0d1518; --bg2: #121c20; --bg3: #162028;
+  --border: #1e293b; --text: #d1d5db; --muted: #4b5563;
+  --accent: #2ecc71; --white: #f1f5f9;
+  --mono:  'Ubuntu Mono', monospace;
+  --sans:  'Ubuntu', sans-serif;
+  --r: 4px; --rl: 10px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+/* ── PROGRESS BAR ── */
+#progress-bar { position: fixed; top: 0; left: 0; height: 2px; background: var(--accent); width: 0%; z-index: 300; transition: width .1s linear; }
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; left: 0; right: 0; z-index: 200;
+  height: 52px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem;
+  background: rgba(13,21,24,.9); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { display: flex; align-items: center; gap: 9px; font-family: var(--mono); font-weight: 700; font-size: 13px; letter-spacing: .2em; color: var(--white); text-decoration: none; }
+.nav-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.nav-right { display: flex; align-items: center; gap: 1.5rem; }
+.nav-back { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; transition: color .15s; }
+.nav-back:hover { color: var(--accent); }
+.nav-tag { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; color: var(--accent); }
+@media(max-width:520px) { nav { padding: 0 1.25rem; } .nav-tag { display: none; } }
+
+/* ── LAYOUT ── */
+.container-article { max-width: 720px; margin: 0 auto; padding: 0 2.5rem; }
+@media(max-width:520px) { .container-article { padding: 0 1.25rem; } }
+
+/* ── HERO IMAGE ── */
+.article-hero-img { width: 100%; border-radius: var(--rl); display: block; image-rendering: pixelated; margin-top: 3rem; }
+
+/* ── ARTICLE HEADER ── */
+.article-header { padding: 2.5rem 0 3rem; border-bottom: 1px solid var(--border); }
+.article-label { font-family: var(--mono); font-size: 11px; letter-spacing: .22em; color: var(--accent); text-transform: uppercase; display: flex; align-items: center; gap: .75rem; margin-bottom: 1.5rem; }
+.article-label::before { content: ''; width: 2rem; height: 1px; background: var(--accent); display: inline-block; }
+.article-title { font-family: var(--sans); font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; color: var(--white); line-height: 1.1; margin-bottom: 1.25rem; }
+.article-subtitle { font-size: 1.1rem; color: var(--muted); line-height: 1.7; margin-bottom: 2rem; }
+.article-meta { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.article-meta .sep { color: var(--border); }
+.article-meta .hi { color: var(--accent); }
+
+/* ── ARTICLE BODY ── */
+article { padding: 3.5rem 0; }
+.prose p { margin-bottom: 1.5rem; line-height: 1.85; }
+.prose em { color: var(--white); font-style: italic; }
+.prose strong { color: var(--white); font-weight: 600; }
+.prose h2 { font-family: var(--sans); font-size: 1.6rem; font-weight: 700; color: var(--white); margin: 3.5rem 0 1.5rem; line-height: 1.2; }
+
+/* ── CORSIA LABEL ── */
+.corsia-label { font-family: var(--mono); font-size: 11px; letter-spacing: .22em; color: var(--accent); text-transform: uppercase; display: flex; align-items: center; gap: .75rem; margin-bottom: 1.25rem; }
+.corsia-label::before { content: ''; display: inline-block; width: 2rem; height: 1px; background: var(--accent); }
+
+/* ── CARD ── */
+.card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--rl); overflow: hidden; margin: 2.5rem 0; }
+.card img { width: 100%; display: block; image-rendering: pixelated; }
+.card-body { padding: 2rem; }
+.card-body p { margin-bottom: 1rem; line-height: 1.8; }
+.card-body p:last-child { margin-bottom: 0; }
+
+/* ── PULLQUOTE ── */
+.pullquote { border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 1.5rem 0; background: rgba(46,204,113,.04); border-radius: 0 var(--r) var(--r) 0; }
+.pullquote p { color: var(--white); font-style: italic; margin-bottom: 0 !important; }
+
+/* ── SECTION IMAGE ── */
+.section-img { width: 100%; border-radius: var(--r); display: block; image-rendering: pixelated; margin-bottom: 2rem; }
+
+/* ── CTA ── */
+.article-cta { margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
+.btn { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; border-radius: var(--r); padding: .65rem 1.4rem; cursor: pointer; border: 1px solid; display: inline-flex; align-items: center; gap: .5rem; text-decoration: none; transition: all .15s; }
+.btn-outline { background: transparent; color: var(--accent); border-color: var(--accent); }
+.btn-outline:hover { background: rgba(46,204,113,.08); }
+.cta-note { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+/* ── FOOTER ── */
+footer { border-top: 1px solid var(--border); padding: 3rem 2.5rem 2rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2rem; }
+.footer-mark { font-family: var(--mono); font-weight: 700; font-size: 18px; letter-spacing: .14em; color: var(--white); }
+.footer-mark span { color: var(--accent); }
+.footer-sub { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: .35rem; }
+.footer-links { display: flex; flex-direction: column; gap: .4rem; }
+.footer-links a { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; transition: color .15s; }
+.footer-links a:hover { color: var(--accent); }
+.footer-copy { text-align: center; font-family: var(--mono); font-size: 10px; color: var(--border); padding: 0 2.5rem 1.5rem; letter-spacing: .08em; }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-dot"></span>
+    JOHN WHALE
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">← Home</a>
+    <span class="nav-tag">ARTICOLO</span>
+  </div>
+</nav>
+
+<!-- HERO IMAGE -->
+<div class="container-article">
+  <img src="assets/fabbrica/1.png" alt="La fabbrica di software — illustrazione pixel art" class="article-hero-img">
+</div>
+
+<!-- ARTICLE HEADER -->
+<div class="container-article">
+  <header class="article-header">
+    <div class="article-label">Metodo · Giugno 2026</div>
+    <h1 class="article-title">La fabbrica di software</h1>
+    <p class="article-subtitle">Non scrivo codice. Gestisco una fabbrica che lo produce.</p>
+    <div class="article-meta">
+      <span>Gianluca Savona</span>
+      <span class="sep">·</span>
+      <span>~6 min lettura</span>
+      <span class="sep">·</span>
+      <span class="hi">johnwhale.com</span>
+    </div>
+  </header>
+</div>
+
+<!-- ARTICLE BODY -->
+<div class="container-article">
+<article class="prose">
+
+  <p>Faccio l'analista tempi e metodi da quindici anni, nel manifatturiero. Flussi, colli di bottiglia, standard, KPI. Due anni fa ho cominciato ad applicare il mestiere all'unica fabbrica che possiedo davvero: la mia.</p>
+
+  <p>Devo essere onesto su una cosa, perché è il punto dell'articolo: il codice dei miei progetti non lo scrivo io. Lo scrivono i modelli AI — Claude, Kimi, i modelli locali via Ollama. Io so leggere il codice, ma se mi chiedete di scrivere a mano un modulo Python pulito in mezz'ora, non sono io la persona giusta. Quello che so fare è un'altra cosa: progettare il sistema in cui quel codice viene prodotto, controllato e riusato.</p>
+
+  <p>C'è un pregiudizio diffuso e in buona parte meritato sul "vibe coding": funziona per il giocattolo del weekend, poi al ventesimo file diventa un caos che nessuno sa più toccare. Vero — se manca il metodo. Ma il caos da crescita disordinata non è un problema nuovo: è il problema che l'industria manifatturiera ha risolto un secolo fa. Standard, distinta base, magazzino componenti, controllo qualità, manutenzione programmata. Così ho smesso di pensare ai miei progetti come "codice" e ho cominciato a trattarli come reparti di una fabbrica.</p>
+
+  <p>Oggi la fabbrica ha una decina di linee attive. Ecco com'è organizzata, corsia per corsia.</p>
+
+  <!-- CORSIA 1 -->
+  <div class="card">
+    <img src="assets/fabbrica/4.png" alt="Corsia 1 — Il metodo">
+    <div class="card-body">
+      <div class="corsia-label">Corsia 1 — Il metodo</div>
+      <p>Ogni fabbrica seria ha un ufficio tempi e metodi. Il mio è una manciata di documenti che ogni agente AI legge prima di toccare qualsiasi cosa: lo stack vincolante (FastAPI, DuckDB, vanilla JS/Alpine JS — niente framework, niente build step, niente CDN), le regole di struttura, e una domanda obbligatoria prima di scrivere una riga: <em>esiste già?</em></p>
+      <p>Nella stessa corsia lavorano due figure che non scrivono codice ma decidono. Il <strong>Librarian</strong> è uno statuto: definisce quando un modulo merita di entrare nel magazzino comune. I criteri sono cinque ed escludenti — usato su almeno un progetto reale, generico, autonomo, testato dall'uso, palesemente migliore di ciò che c'è già.</p>
+      <div class="pullquote"><p>Una libreria con codice mediocre è peggio di nessuna libreria.</p></div>
+      <p><strong>weaver</strong> è il controllo qualità: un agente che gira da solo, un progetto ogni due giorni. Misura lo stato di salute di ogni linea rispetto agli standard, segnala le derive, e quando trova un pezzo di codice che si ripete propone: "questo può entrare in magazzino". Osserva e segnala, non tocca — le decisioni restano umane.</p>
+    </div>
+  </div>
+
+  <!-- CORSIA 2 -->
+  <div class="card">
+    <img src="assets/fabbrica/3.png" alt="Corsia 2 — L'infrastruttura comune">
+    <div class="card-body">
+      <div class="corsia-label">Corsia 2 — L'infrastruttura comune</div>
+      <p>Il magazzino componenti è una libreria di moduli pronti: autenticazione, accesso dati, tabelle, client HTTP, template. Ogni nuova app interna parte da lì invece che da zero — l'indice è un file JSON che gli agenti AI leggono come una distinta base.</p>
+      <p>Accanto c'è la memoria di fabbrica: un file globale con le regole permanenti e una memoria per ogni progetto. Qualsiasi modello AI apra una sessione — oggi Claude, domani un modello locale — trova lo stesso contesto. È quello che permette di cambiare "operaio" senza perdere la conoscenza del reparto.</p>
+    </div>
+  </div>
+
+  <!-- CORSIA 3 -->
+  <div class="card">
+    <img src="assets/fabbrica/2.png" alt="Corsia 3 — La produzione">
+    <div class="card-body">
+      <div class="corsia-label">Corsia 3 — La produzione</div>
+      <p>Gli LLM sono il reparto produttivo, e come ogni reparto ha i suoi turni. Le linee interne producono app per uso reale: gestione operativa, matching semantico di CV, ricerca documentale locale. I turni automatici sono GitHub Actions che lavorano di notte: raccolgono offerte di lavoro e notizie, generano il mio brief quotidiano, ricostruiscono la pagina del portfolio.</p>
+      <p>Un vincolo attraversa tutto: niente cloud a pagamento, dati sensibili solo in locale. Non per ideologia — per economia e per il tipo di dati che tratto. L'ho chiamata <strong>Economic Way</strong>: la soluzione più semplice che funziona, a costo marginale zero.</p>
+    </div>
+  </div>
+
+  <!-- CORSIA 4 -->
+  <div class="card">
+    <img src="assets/fabbrica/5.png" alt="Corsia 4 — L'uscita">
+    <div class="card-body">
+      <div class="corsia-label">Corsia 4 — L'uscita</div>
+      <p>La produzione che merita di uscire passa da un pannello: un bot Telegram mi porta report e proposte — anche le bozze dei post come questo. Io approvo, scarto, correggo. Solo dopo, il contenuto arriva alla vetrina pubblica. Nessun automatismo pubblica nulla da solo: l'ultima firma è sempre umana.</p>
+    </div>
+  </div>
+
+  <h2>Generazione 1 → Generazione 2</h2>
+
+  <img src="assets/fabbrica/6.png" alt="Da generazione 1 a generazione 2" class="section-img">
+
+  <p>La fabbrica non è nata così. La prima generazione era una suite di strumenti da consulenza — calcolo scorte, forecasting AutoML, process mining, generatore di executive summary — costruiti uno per volta, ognuno per sé. Funzionavano, ma ogni progetto reinventava i suoi pezzi. In uno di quei progetti c'è ancora il file dove ho scritto per la prima volta le regole dell'Economic Way.</p>
+
+  <p>La seconda generazione è questa: stesse regole, ma industrializzate. Magazzino invece di copia-incolla, controllo qualità automatico invece di revisioni quando capita, memoria condivisa invece di ricominciare ogni sessione da zero. Non è migliorato il mio codice — è migliorato il sistema che lo produce. Che è esattamente quello che un tempi e metodi farebbe in qualsiasi stabilimento.</p>
+
+  <h2>Cosa me ne faccio</h2>
+
+  <p>Nel lavoro assistito dall'AI il collo di bottiglia non è più scrivere codice — è governarlo. E governare flussi di produzione è una competenza che il manifatturiero insegna meglio di qualsiasi bootcamp. Se fai il mio mestiere, sei pronto a questa stagione più di quanto pensi.</p>
+
+  <p>Buona parte di questo gira su un PC consumer, senza cloud a pagamento, con dati che non escono mai. Per una PMI manifatturiera che guarda all'AI con interesse e diffidenza insieme, è la dimostrazione che esiste una terza via tra "ignorare l'AI" e "mandare i dati di produzione a un fornitore americano".</p>
+
+  <p>La mappa qui sopra è la fabbrica vera, non uno schema idealizzato. Se vuoi vederla più da vicino — o se nel tuo stabilimento c'è un processo che meriterebbe una linea dedicata — mi trovi qui.</p>
+
+  <!-- CTA -->
+  <div class="article-cta">
+    <a href="mailto:hi@johnwhale.com" class="btn btn-outline">Scrivimi →</a>
+    <span class="cta-note">johnwhale.com · Gianluca Savona</span>
+  </div>
+
+</article>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-mark">JOHN <span>W</span>HALE</div>
+    <div class="footer-sub">Economic Ways · johnwhale.com · Bergamo, IT</div>
+  </div>
+  <div class="footer-links">
+    <a href="index.html">← Home</a>
+    <a href="mailto:hi@johnwhale.com">hi@johnwhale.com</a>
+    <a href="https://www.linkedin.com/in/gianluca-savona/" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</footer>
+<div class="footer-copy">JOHN WHALE © 2026 — Economic Ways.</div>
+
+<script>
+window.addEventListener('scroll', () => {
+  const article = document.querySelector('article');
+  if (!article) return;
+  const rect = article.getBoundingClientRect();
+  const pct = Math.min(100, Math.max(0, (-rect.top / article.offsetHeight) * 100));
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+</script>
+<script data-goatcounter="https://johnwhaledev.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
