@@ -301,27 +301,6 @@ header {
   color: var(--jw-text);
 }
 
-/* ── Weather pill in header ──────────────────────────────── */
-.weather-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: var(--jw-bg3);
-  border: 1px solid var(--jw-border);
-  border-radius: 20px;
-  padding: 0.25rem 0.75rem;
-  font-family: 'Ubuntu Mono', monospace;
-  font-size: 0.8rem;
-  color: var(--jw-text);
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
-  white-space: nowrap;
-}
-.weather-pill:hover {
-  border-color: rgba(46,204,113,0.4);
-  color: var(--jw-white);
-}
-
 /* ── Meteo modal overlay ─────────────────────────────────── */
 .meteo-modal-overlay {
   position: fixed;
