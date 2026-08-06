@@ -20,8 +20,8 @@
 
 ## Progetti
 
-- **suMidi**: generatore MIDI procedurale client-side, nessun server — 16 stili
-  musicali, session mode DAW-inspired, export multi-traccia
+- [suMidi](https://sumidi.johnwhale.com): generatore MIDI procedurale client-side,
+  nessun server — 16 stili musicali, session mode DAW-inspired, export multi-traccia
 
 ## Competenze chiave
 
