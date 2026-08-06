@@ -55,7 +55,7 @@ a:hover { text-decoration: underline; }
 
   <div class="card">
     <h1>Privacy &amp; Cookie Policy</h1>
-    <div class="meta">Ultimo aggiornamento: Maggio 2026</div>
+    <div class="meta">Ultimo aggiornamento: Agosto 2026</div>
 
     <p>
       Benvenuto su <strong>johnwhale.com</strong>. In questa pagina descrivo le modalità di gestione del sito in riferimento al trattamento dei dati personali degli utenti che lo consultano, ai sensi del Regolamento UE 2016/679 (GDPR).
@@ -104,13 +104,32 @@ a:hover { text-decoration: underline; }
       </li>
     </ul>
 
-    <h2>4. Hosting</h2>
+    <h2>4. Intelligenza Artificiale e servizi di terze parti — /miniLab</h2>
+    <p>
+      La sezione <a href="/miniLab/">/miniLab</a> è una vetrina autogenerata a scopo di <strong>laboratorio/portfolio</strong>: mostra in funzione alcuni strumenti che sviluppo (rassegna news tech/AI, ricerca di offerte di lavoro con ranking semantico, meteo). Non è un servizio erogato a terzi. La pagina viene rigenerata periodicamente da un processo automatico lato server (non ad ogni visita), che utilizza:
+    </p>
+    <ul>
+      <li>
+        <strong>Groq (LLM cloud, USA):</strong> traduce e riassume in italiano i titoli delle notizie tech/AI raccolte da fonti RSS pubbliche. Riceve esclusivamente testo di notizie pubbliche — non riceve mai dati personali dei visitatori né dati del mio CV.
+      </li>
+      <li>
+        <strong>Adzuna:</strong> API di ricerca annunci di lavoro, interrogata dal processo di generazione automatica della pagina e non dal tuo browser — nessun tuo dato viene inviato ad Adzuna quando visiti il sito.
+      </li>
+      <li>
+        <strong>fastembed (modello multilingual-e5-large):</strong> confronta semanticamente gli annunci di lavoro con il mio profilo professionale per ordinarli per affinità. L'elaborazione avviene interamente in locale durante la generazione della pagina — nessun dato viene inviato a servizi esterni per questo scopo. Il profilo usato per il confronto contiene solo ruolo e competenze professionali, già pubblici altrove su questo sito: nessun dato sensibile.
+      </li>
+    </ul>
+    <div class="notice">
+      <p>In linea con gli obblighi di trasparenza sui contenuti trattati con intelligenza artificiale (Regolamento UE 2024/1689 — AI Act), specifico che titoli e sintesi delle notizie mostrate in /miniLab sono tradotti/riassunti con l'ausilio di un modello linguistico automatico (Groq) e non sono redazione editoriale originale.</p>
+    </div>
+
+    <h2>5. Hosting</h2>
     <p>
       Questo sito è ospitato su <strong>GitHub Pages</strong> (GitHub, Inc. — Microsoft), che agisce in conformità con il Data Privacy Framework (DPF) per il trasferimento di dati tra UE e USA.
       I dati di navigazione (log di accesso anonimi) sono trattati presso i loro data center per finalità di sicurezza e analisi del traffico.
     </p>
 
-    <h2>5. Diritti dell'Interessato</h2>
+    <h2>6. Diritti dell'Interessato</h2>
     <p>
       Hai il diritto in qualunque momento di ottenere la conferma dell'esistenza dei dati, conoscerne il contenuto, verificarne l'esattezza o chiederne l'integrazione, l'aggiornamento, la rettificazione o la cancellazione.
     </p>

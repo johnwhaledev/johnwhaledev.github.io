@@ -8,10 +8,20 @@
 ## Pagine principali
 
 - [Home](https://www.johnwhale.com/): profilo, competenze, progetti
+- [La fabbrica di software](https://www.johnwhale.com/fabbrica.html): articolo su
+  come Gianluca applica il metodo da analista tempi e metodi allo sviluppo
+  AI-assistito dei propri progetti
 - [miniLab](https://www.johnwhale.com/miniLab/): vetrina live autogenerata — meteo,
-  news AI curate, offerte di lavoro ordinate per match semantico col CV (embedding
-  e5-large offline)
-- [Privacy](https://www.johnwhale.com/privacy.html)
+  news AI curate (tradotte/riassunte via LLM, Groq), offerte di lavoro ordinate per
+  match semantico col CV (embedding e5-large offline, nessun dato personale inviato
+  a terzi)
+- [Privacy](https://www.johnwhale.com/privacy.html): informativa GDPR, incluse le
+  terze parti usate da miniLab
+
+## Progetti
+
+- **suMidi**: generatore MIDI procedurale client-side, nessun server — 16 stili
+  musicali, session mode DAW-inspired, export multi-traccia
 
 ## Competenze chiave
 

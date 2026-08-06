@@ -150,6 +150,7 @@ p.lead { color: var(--text); max-width: 60ch; line-height: 1.8; }
 
 /* ── PRESENCE STRIP ── */
 .presence-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.25rem; margin-top: 3rem; }
+#projects .presence-strip { grid-template-columns: repeat(2,1fr); max-width: 640px; }
 .presence-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--rl); padding: 1.4rem; text-decoration: none; transition: border-color .2s, transform .2s; display: block; }
 .presence-card:hover { border-color: rgba(46,204,113,.35); transform: translateY(-2px); }
 .presence-platform { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: .14em; margin-bottom: .6rem; text-transform: uppercase; }
@@ -211,8 +212,8 @@ footer { border-top: 1px solid var(--border); padding: 3rem 2.5rem 2rem; display
   <ul>
     <li><a href="#about">Chi sono</a></li>
     <li><a href="#philosophy">Economic Ways</a></li>
+    <li><a href="#projects">Progetti</a></li>
     <li><a href="#consulting">Consulenza</a></li>
-    <li><a href="/miniLab/">miniLab</a></li>
     <li><a href="fabbrica.html">Articoli</a></li>
   </ul>
   <div class="nav-social">
@@ -224,6 +225,9 @@ footer { border-top: 1px solid var(--border); padding: 3rem 2.5rem 2rem; display
     </a>
     <a href="https://www.linkedin.com/in/gianluca-savona/" target="_blank" rel="noopener" title="LinkedIn">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43c-1.14 0-2.06-.93-2.06-2.07 0-1.14.92-2.06 2.06-2.06 1.14 0 2.06.92 2.06 2.06 0 1.14-.92 2.07-2.06 2.07zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.27V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+    </a>
+    <a href="https://ko-fi.com/johnwhale" target="_blank" rel="noopener" title="Ko-fi">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
     </a>
     <a href="mailto:hi@johnwhale.com" title="Email">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -358,10 +362,32 @@ footer { border-top: 1px solid var(--border); padding: 3rem 2.5rem 2rem; display
   </div>
 </section>
 
+<!-- ── PROJECTS ── -->
+<section id="projects">
+  <div class="container">
+    <div class="section-label">03 — Projects</div>
+    <h2>Progetti.</h2>
+    <p class="lead">Strumenti che uso e sviluppo in prima persona, applicando Economic Ways al di fuori del lavoro da consulente.</p>
+
+    <div class="presence-strip reveal">
+      <a href="/miniLab/" class="presence-card">
+        <div class="presence-platform">Lab</div>
+        <div class="presence-url">miniLab</div>
+        <div class="presence-note">Vetrina live autogenerata<br>news AI, offerte lavoro, meteo</div>
+      </a>
+      <a href="https://github.com/johnwhaledev/sumidi" target="_blank" rel="noopener" class="presence-card">
+        <div class="presence-platform">Tool</div>
+        <div class="presence-url">suMidi</div>
+        <div class="presence-note">Generatore MIDI procedurale<br>client-side, pronto per il DAW</div>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- ── CONSULTING ── -->
 <section id="consulting">
   <div class="container">
-    <div class="section-label">03 — Consulting</div>
+    <div class="section-label">04 — Consulting</div>
     <h2>B2B — quando serve<br>qualcuno che capisce entrambi i lati.</h2>
     <p class="lead">Per aziende manifatturiere e industriali che hanno bisogno di analisi di processo, strumenti dati o un tool interno costruito da chi ha operato in quel contesto per un decennio.</p>
 
@@ -414,6 +440,7 @@ footer { border-top: 1px solid var(--border); padding: 3rem 2.5rem 2rem; display
     <a href="https://github.com/johnwhaledev/" target="_blank" rel="noopener">GitHub</a>
     <a href="https://open.spotify.com/intl-it/artist/7etRtq3G1vv4HOwIO29VgK" target="_blank" rel="noopener">Spotify</a>
     <a href="https://www.linkedin.com/in/gianluca-savona/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://ko-fi.com/johnwhale" target="_blank" rel="noopener">Ko-fi</a>
     <a href="mailto:hi@johnwhale.com">hi@johnwhale.com</a>
     <a href="fabbrica.html">La fabbrica di software →</a>
   </div>
