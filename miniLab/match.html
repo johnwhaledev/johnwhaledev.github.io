@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var s=localStorage.getItem('jw-theme');if(s)document.documentElement.setAttribute('data-theme',s);})()</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Match — offerte di lavoro con ranking semantico CV↔annuncio | miniLab</title>
+  <meta name="description" content="Offerte entro 100 km da Bergamo ordinate per affinita' semantica col CV (embedding e5-large), con statistiche RAL aggregate. Vetrina live di John Whale.">
+  <link rel="canonical" href="https://www.johnwhale.com/miniLab/match.html">
+  <link rel="icon" type="image/png" href="assets/img/logo_jw_48.png">
+
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
+  <link rel="stylesheet" href="vendor/pico.min.css">
+  <link rel="stylesheet" href="assets/css/custom.css">
+
+  <script defer src="assets/js/canvas-bg.js"></script>
+  <script defer src="assets/js/lab.js"></script>
+  <script defer src="vendor/alpine.min.js"></script>
+
+  <style>
+    [x-cloak] { display: none !important; }
+    body { background-color: transparent !important; }
+
+    .section-label {
+      font-family: 'Ubuntu Mono', monospace; font-size: 0.72rem; letter-spacing: 0.18em;
+      color: var(--jw-accent); text-transform: uppercase; margin: 1.8rem 0 0.6rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .section-label::before { content: ''; width: 1.8rem; height: 1px; background: var(--jw-accent); display: inline-block; }
+    .section-note { font-family: 'Ubuntu Mono', monospace; font-size: 0.76rem; color: var(--jw-muted); margin: 0 0 1rem; line-height: 1.5; }
+
+    .meta-mono { font-family: 'Ubuntu Mono', monospace; font-size: 0.72rem; color: var(--jw-muted); }
+    .apri-link { font-size: 0.76rem; font-family: 'Ubuntu Mono', monospace; text-decoration: none; color: var(--jw-accent); white-space: nowrap; }
+    .apri-link:hover { text-decoration: underline; }
+    .score-tag { font-family: 'Ubuntu Mono', monospace; font-weight: 700; font-size: 0.92rem; }
+    .empty-state { color: var(--jw-muted); font-size: 0.88rem; font-style: italic; padding: 1rem 0; }
+
+    /* ── Nav allineata a johnwhale.com ─────────────────────── */
+    .nav-logo { display: flex; align-items: center; gap: 9px; font-family: 'Ubuntu Mono', monospace; font-weight: 700; font-size: 13px; letter-spacing: 0.2em; color: var(--jw-white); text-decoration: none; }
+    .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--jw-accent); flex-shrink: 0; }
+    .nav-right { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+    .nav-cta { font-family: 'Ubuntu Mono', monospace; font-size: 11px; letter-spacing: 0.1em; border: 1px solid var(--jw-accent); color: var(--jw-accent); background: transparent; border-radius: 4px; padding: 0.32rem 0.8rem; cursor: pointer; transition: background 0.15s; }
+    .nav-cta:hover { background: rgba(46,204,113,0.1); }
+    .nav-social { display: flex; align-items: center; gap: 0.7rem; }
+    .nav-social a { color: var(--jw-muted); display: flex; align-items: center; transition: color 0.15s; }
+    .nav-social a:hover { color: var(--jw-accent); }
+    .nav-date { font-size: 0.72rem; }
+    @media (max-width: 680px) { .nav-date { display: none; } }
+    @media (max-width: 560px) { .nav-social { display: none; } }
+
+    .chip-row { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
+    .chip-kw {
+      display: inline-block; border: 1px solid; border-radius: 3px; padding: 0.06rem 0.4rem;
+      font-size: 0.66rem; font-family: 'Ubuntu Mono', monospace; background: transparent; white-space: nowrap;
+    }
+
+    /* ── Layout a 2 colonne: sx = meteo+news, dx = KPI+offerte ── */
+    .main-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; margin-top: 1.5rem; }
+    @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+    .col { min-width: 0; }
+    .col .section-label:first-child { margin-top: 1.6rem; }
+
+    .panel { background: var(--jw-bg2); border: 1px solid var(--jw-border); border-radius: 10px; padding: 1.1rem 1.2rem; }
+    .panel-title { font-family: 'Ubuntu Mono', monospace; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--jw-accent); margin: 0 0 0.9rem; }
+    /* auto-fit: 4 KPI in fila su desktop, a capo su schermi stretti. Erano su due
+       colonne fisse perche' stavano nella colonna destra, stretta, del vecchio
+       layout a due colonne (fino al 2026-08-22). */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.6rem; }
+    .kpi { background: var(--jw-bg3); border: 1px solid var(--jw-border); border-radius: 8px; padding: 0.7rem 0.85rem; }
+    .kpi-val { font-family: 'Ubuntu Mono', monospace; font-size: 1.15rem; font-weight: 700; color: var(--jw-accent); line-height: 1.2; }
+    .kpi-lbl { font-family: 'Ubuntu Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--jw-muted); margin-top: 0.25rem; }
+
+    /* ── Card orizzontali (stile report miniHr) ───────────── */
+    .rows { display: flex; flex-direction: column; gap: 0.6rem; }
+    .row-item {
+      background: var(--jw-bg2); border: 1px solid var(--jw-border); border-left: 3px solid var(--jw-accent);
+      border-radius: 6px; padding: 0.8rem 1.1rem; transition: border-color 0.15s;
+    }
+    .row-item:hover { border-color: rgba(46,204,113,0.4); }
+    .row-top { display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; }
+    .row-title { font-size: 0.96rem; font-weight: 500; margin: 0.2rem 0 0; line-height: 1.35; }
+    .row-title a { color: var(--jw-white); text-decoration: none; }
+    .row-title a:hover { color: var(--jw-accent); }
+    .row-sub {
+      font-size: 0.84rem; color: var(--jw-muted); line-height: 1.5; margin: 0.3rem 0 0;
+      /* clamp a 2 righe: avvicina l'altezza delle card news a quelle offerte, liste piu' parallele */
+      display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    .toggle-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 1rem;
+      background: var(--jw-bg3); border: 1px solid var(--jw-border); color: var(--jw-accent);
+      font-family: 'Ubuntu Mono', monospace; font-size: 0.78rem; border-radius: 6px;
+      padding: 0.4rem 0.9rem; cursor: pointer; transition: border-color 0.15s;
+    }
+    .toggle-btn:hover { border-color: rgba(46,204,113,0.45); }
+
+    /* ── Footer identico a johnwhale.com ───────────────────── */
+    .lab-footer { display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--jw-border); }
+    .footer-mark { font-family: 'Ubuntu Mono', monospace; font-weight: 700; font-size: 18px; letter-spacing: 0.14em; color: var(--jw-white); }
+    .footer-mark span { color: var(--jw-accent); }
+    .footer-sub { font-family: 'Ubuntu Mono', monospace; font-size: 11px; color: var(--jw-muted); margin-top: 0.35rem; }
+    .footer-links { display: flex; flex-direction: column; gap: 0.4rem; }
+    .footer-links a { font-family: 'Ubuntu Mono', monospace; font-size: 12px; color: var(--jw-muted); text-decoration: none; transition: color 0.15s; }
+    .footer-links a:hover { color: var(--jw-accent); }
+    .footer-copy { text-align: center; font-family: 'Ubuntu Mono', monospace; font-size: 10px; color: var(--jw-border); padding: 1.5rem 0 2rem; letter-spacing: 0.08em; }
+
+    /* ── Modale CV ─────────────────────────────────────────── */
+    .cv-block { margin-top: 1.4rem; padding-top: 1.1rem; border-top: 1px solid var(--jw-border); }
+    .cv-block h5 { font-family: 'Ubuntu Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--jw-accent); margin: 0 0 0.7rem; }
+    .cv-exp { padding-left: 0.9rem; border-left: 2px solid var(--jw-border); margin-bottom: 1rem; }
+    .cv-exp-head { display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; align-items: baseline; }
+    .cv-exp-role { color: var(--jw-white); font-weight: 500; font-size: 0.92rem; }
+    .cv-exp-when { font-family: 'Ubuntu Mono', monospace; font-size: 0.7rem; color: var(--jw-muted); white-space: nowrap; }
+    .cv-exp-org { color: var(--jw-accent); font-size: 0.8rem; margin-bottom: 0.35rem; }
+    .cv-exp ul, .cv-list { margin: 0; padding-left: 1.1rem; }
+    .cv-exp li, .cv-list li { font-size: 0.85rem; color: var(--jw-text); line-height: 1.5; margin-bottom: 0.25rem; }
+    .cv-comp { margin-bottom: 0.6rem; }
+    .cv-comp-cat { font-family: 'Ubuntu Mono', monospace; font-size: 0.74rem; color: var(--jw-white); margin-bottom: 0.2rem; }
+    .meteo-umid { font-size: 0.62rem; color: #74b9ff; display: block; }
+
+    /* ── Intestazione di pagina (Daily Brief / Match) ───────── */
+    .page-title { font-family: 'Ubuntu Mono', monospace; font-size: 1.15rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--jw-white); margin: 0 0 0.3rem; }
+    .page-title::before { content: ''; display: inline-block; width: 1.8rem; height: 2px;
+      background: var(--jw-accent); vertical-align: middle; margin-right: 0.75rem; }
+    .page-sub { font-size: 0.86rem; color: var(--jw-muted); line-height: 1.6; margin: 0 0 1.6rem; }
+  </style>
+
+  <script>window.LAB_DATA = {"generato_il": "27/08/2026 22:26", "offerte": {"items": [{"titolo": "SAP BTP Consultant", "azienda": "N2TWK", "location": "Lanza, Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 75, "link": "https://www.adzuna.it/details/5856507855?utm_medium=api&utm_source=e6da62c3", "data": "26/08", "oggi": false}, {"titolo": "IT Junior SAP Fi - Finance", "azienda": "Iper", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 73, "link": "https://www.adzuna.it/details/5857034304?utm_medium=api&utm_source=e6da62c3", "data": "26/08", "oggi": false}, {"titolo": "Ict Specialist Sap", "azienda": "Iper", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 71, "link": "https://www.adzuna.it/details/5858437450?utm_medium=api&utm_source=e6da62c3", "data": "27/08", "oggi": true}, {"titolo": "IT Business Analyst", "azienda": "DHL", "location": "Liscate, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 68, "link": "https://www.adzuna.it/details/5858447838?utm_medium=api&utm_source=e6da62c3", "data": "27/08", "oggi": true}, {"titolo": "IT Business Analyst - Logistics & Supply Chain", "azienda": "Oliver James Associates", "location": "Monza, Provincia di Monza e Brianza", "ral_min": null, "ral_max": null, "ral": null, "score": 67, "link": "https://www.adzuna.it/details/5858471981?utm_medium=api&utm_source=e6da62c3", "data": "27/08", "oggi": true}, {"titolo": "Data Analyst", "azienda": "Gruppo Pontiggia", "location": "Figino Serenza, Provincia di Como", "ral_min": null, "ral_max": null, "ral": null, "score": 66, "link": "https://www.adzuna.it/details/5858478363?utm_medium=api&utm_source=e6da62c3", "data": "27/08", "oggi": true}, {"titolo": "Business Analyst Intern", "azienda": "Berlin Packaging Italy SpA", "location": "Milano, Provincia di Milano", "ral_min": null, "ral_max": null, "ral": null, "score": 66, "link": "https://www.adzuna.it/details/5858472382?utm_medium=api&utm_source=e6da62c3", "data": "27/08", "oggi": true}, {"titolo": "Data Analyst", "azienda": "Labor Spa", "location": "Castel San Giovanni, Provincia di Piacenza", "ral_min": null, "ral_max": null, "ral": null, "score": 65, "link": "https://www.adzuna.it/details/5858475691?utm_medium=api&utm_source=e6da62c3", "data": "27/08", "oggi": true}, {"titolo": "Data Analyst Settore Logistico", "azienda": "Labor Spa", "location": "Piacenza, Provincia di Piacenza", "ral_min": null, "ral_max": null, "ral": null, "score": 65, "link": "https://www.adzuna.it/details/5858471545?utm_medium=api&utm_source=e6da62c3", "data": "27/08", "oggi": true}, {"titolo": "Data Analyst Junior", "azienda": "La Piadineria", "location": "Montirone, Provincia di Brescia", "ral_min": null, "ral_max": null, "ral": null, "score": 65, "link": "https://www.adzuna.it/details/5856987634?utm_medium=api&utm_source=e6da62c3", "data": "26/08", "oggi": false}, {"titolo": "Business Analyst", "azienda": "I. K. Hofmann GmbH", "location": "Lallio, Provincia di Bergamo", "ral_min": null, "ral_max": null, "ral": null, "score": 61, "link": "https://www.adzuna.it/details/5858434147?utm_medium=api&utm_source=e6da62c3", "data": "27/08", "oggi": true}, {"titolo": "Operations Data Analyst", "azienda": "La Cisa Trasporti Industriali srl", "location": "Dalmine, Provincia di Bergamo", "ral_min": null, "ral_max": null, "ral": null, "score": 60, "link": "https://www.adzuna.it/details/5858439206?utm_medium=api&utm_source=e6da62c3", "data": "27/08", "oggi": true}], "stats": {"n": 442, "n_con_ral": 8, "ral_media": 45562, "ral_mediana": 42500, "ral_max": 63000, "match_medio": 70, "mostrate": 12, "match_min": 60, "dal_run": 12}}, "cv": {"_note": "CV reale di G. Savona per il display, SANIFICATO: niente indirizzo, telefono o email personale. Fonte: matcHr/data/cv_md/cv_savona_05-2026.md.", "nome": "Gianluca Savona", "ruolo": "Analista di Processi e Sistemi · SAP & AI Solutions", "location": "Bergamo, IT", "email": "hi@johnwhale.com", "linkedin": "https://www.linkedin.com/in/gianluca-savona/", "sito": "https://www.johnwhale.com", "anni_esperienza": 15, "sommario": "Analista di Processi e Sistemi con oltre 15 anni nel manifatturiero, specializzato nel tradurre esigenze di business complesse in soluzioni tecnologiche efficienti. Guardo alla trasformazione digitale (SAP S/4HANA, AI) come leva strategica per ottimizzare i flussi produttivi, ridurre i costi e aumentare la marginalità. Esperienza comprovata nella gestione di progetti critici come l'integrazione di sistemi ERP e software di pianificazione avanzata.", "esperienze": [{"periodo": "Gen 2013 – oggi", "ruolo": "Analista Tempi e Metodi / SAP Key-User (MM, PP)", "azienda": "Aesys S.p.A.", "luogo": "Seriate (BG)", "punti": ["Project leadership integrazione SAP–Cyberplan: gestito l'intero ciclo di vita dell'implementazione dello scheduler avanzato Cyberplan, coordinando team interfunzionali e fornitori esterni.", "Trasformazione digitale, migrazione SAP S/4HANA: membro chiave del team di progetto, responsabile dell'analisi e reingegnerizzazione dei processi MM e PP con flussi end-to-end coerenti.", "Ottimizzazione dei processi produttivi: identificati colli di bottiglia e inefficienze, implementate soluzioni di miglioramento continuo, definiti e monitorati KPI strategici."]}, {"periodo": "Gen 2011 – Dic 2012", "ruolo": "Pianificatore di produzione", "azienda": "Aesys S.p.A.", "luogo": "Seriate (BG)", "punti": ["Gestione e schedulazione della produzione meccanica, rispetto delle scadenze di consegna e ottimizzazione dei carichi di lavoro."]}, {"periodo": "Set 2007 – Ott 2009", "ruolo": "Impiegato tecnico", "azienda": "Aesys S.p.A.", "luogo": "Seriate (BG)", "punti": ["Gestione anagrafiche e codifica materiali in ERP, garantendo integrità e accuratezza dei dati."]}], "competenze": [{"categoria": "Sistemi ERP", "voci": ["SAP S/4HANA (progetto di migrazione)", "SAP ECC — moduli MM, PP (Key User)", "Integrazione sistemi"]}, {"categoria": "Analisi Dati", "voci": ["Python", "SQL", "Analisi e monitoraggio KPI", "Business Process Modeling", "Machine Learning"]}, {"categoria": "Project Management", "voci": ["Gestione progetti end-to-end", "Selezione e gestione fornitori"]}, {"categoria": "Tecnologie & AI", "voci": ["Modelli AI per lo sviluppo software", "JavaScript (base)", "HTML/CSS (base)"]}, {"categoria": "Produttività", "voci": ["Microsoft Excel (avanzato)", "Microsoft Office Suite (avanzato)", "Programmazione VBA per l'automazione"]}, {"categoria": "Soft Skills", "voci": ["Problem solving complesso", "Comunicazione strategica", "Leadership di progetto", "Team working"]}], "formazione": ["AI Agents with Model Context Protocol & TypeScript — Vanderbilt University (Coursera)", "Google Advanced Data Analytics — Google (Coursera)", "SAP Business Analyst — SAP (Coursera)", "Google AI Essentials — Google (Coursera)", "Google Data Analytics — Google (Coursera)", "Google People Management Essentials — Google (Coursera)", "Google Stakeholder Management — Google (Coursera)", "Google Prompting Essentials — Google (Coursera)", "2006–2007 — Studi in Ingegneria Gestionale, Università degli Studi di Bergamo", "2001–2005 — Diploma Perito Industriale (Informatica), ITIS G. Marconi"], "lingue": [{"lingua": "Italiano", "livello": "Madrelingua"}, {"lingua": "Inglese", "livello": "Buono"}], "extra": "Cantante e chitarrista con esperienza in studio di registrazione e live performance: attività che coltiva creatività, disciplina e collaborazione in team."}};</script>
+</head>
+
+<body x-data="labApp()" x-init="init()">
+
+  <canvas id="bg-canvas"></canvas>
+  <div class="hero-overlay"></div>
+
+  <!-- Header fisso — stile nav johnwhale.com -->
+  <header class="jw-header">
+    <div class="container" style="padding-top:0;padding-bottom:0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+        <a href="https://www.johnwhale.com/" class="nav-logo">
+          <span class="nav-dot"></span> JW · MINILAB
+        </a>
+        <div class="nav-right">
+          <a class="nav-cta" href="./">← Daily Brief</a>
+          <button class="nav-cta" @click="showCv = true">📄 CV</button>
+          <span class="meta-mono nav-date" x-text="'agg. ' + d.generato_il"></span>
+          <div class="nav-social">
+            <a href="https://github.com/johnwhaledev/" target="_blank" rel="noopener" aria-label="GitHub">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+            </a>
+            <a href="https://open.spotify.com/intl-it/artist/7etRtq3G1vv4HOwIO29VgK" target="_blank" rel="noopener" aria-label="Spotify">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/gianluca-savona/" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43c-1.14 0-2.06-.93-2.06-2.07 0-1.14.92-2.06 2.06-2.06 1.14 0 2.06.92 2.06 2.06 0 1.14-.92 2.07-2.06 2.07zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.27V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+            </a>
+            <a href="https://ko-fi.com/johnwhale" target="_blank" rel="noopener" aria-label="Ko-fi">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+            </a>
+            <a href="mailto:hi@johnwhale.com" aria-label="Email">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container content-wrapper" style="padding-top:4.5rem;" x-cloak>
+
+    <h1 class="page-title">Match</h1>
+    <p class="page-sub">Offerte di lavoro ordinate per affinit&agrave; semantica col mio CV, con le statistiche RAL dello storico.</p>
+
+    <div class="panel">
+      <div class="panel-title">Offerte affini · KPI RAL</div>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-val" x-text="stats.ral_media ? fmtRal(stats.ral_media) : 'n/d'"></div><div class="kpi-lbl">RAL media</div></div>
+        <div class="kpi"><div class="kpi-val" x-text="stats.ral_mediana ? fmtRal(stats.ral_mediana) : 'n/d'"></div><div class="kpi-lbl">RAL mediana</div></div>
+        <div class="kpi"><div class="kpi-val" x-text="stats.ral_max ? fmtRal(stats.ral_max) : 'n/d'"></div><div class="kpi-lbl">RAL max</div></div>
+        <div class="kpi"><div class="kpi-val" x-text="(stats.match_medio || 0) + '%'"></div><div class="kpi-lbl">Match medio</div></div>
+      </div>
+    </div>
+
+    <div class="section-label">Offerte entro 100 km da Bergamo</div>
+    <p class="section-note">
+      Ordinate per <strong style="color:var(--jw-accent);">match semantico</strong> col mio profilo (e5-large):
+      <span x-text="stats.n || 0"></span> offerte con affinità ≥ <span x-text="stats.match_min || 55"></span>%.
+    </p>
+    <div class="empty-state" x-show="!offerte.length">Nessuna offerta sopra soglia (o manca la chiave Adzuna).</div>
+    <div class="rows" x-show="offerte.length">
+      <template x-for="(o, i) in offerte" :key="i">
+        <article class="row-item" x-show="i < 12 || offerteEspanse">
+          <div class="row-top">
+            <span class="score-tag" x-show="o.score != null" :style="'color:'+scoreColor(o.score)" x-text="o.score + '%'"></span>
+            <span class="row-title" style="flex:1;margin:0;"><a :href="o.link" target="_blank" rel="noopener" x-text="o.titolo"></a></span>
+            <span class="badge tag-red" x-show="o.oggi" style="font-size:0.62rem;text-transform:uppercase;">oggi</span>
+          </div>
+          <div class="row-top" style="margin-top:0.35rem;">
+            <span class="meta-mono">
+              <span x-text="o.azienda"></span><span x-show="o.location" x-text="' · ' + o.location"></span>
+              <span x-show="ralRange(o)" style="color:var(--jw-accent);" x-text="' · ' + ralRange(o)"></span>
+            </span>
+            <span class="meta-mono" style="margin-left:auto;" x-show="o.data" x-text="o.data"></span>
+            <a class="apri-link" :href="o.link" target="_blank" rel="noopener">Apri offerta →</a>
+          </div>
+        </article>
+      </template>
+    </div>
+    <button class="toggle-btn" x-show="offerte.length > 12" @click="offerteEspanse = !offerteEspanse">
+      <span x-text="offerteEspanse ? '▴ Mostra meno' : ('▾ Mostra altre ' + (offerte.length - 12) + ' offerte')"></span>
+    </button>
+
+
+    <!-- Footer — identico a johnwhale.com -->
+    <footer class="lab-footer">
+      <div>
+        <div class="footer-mark">JOHN <span>W</span>HALE</div>
+        <div class="footer-sub">Economic Ways · johnwhale.com · Bergamo, IT · miniLab</div>
+      </div>
+      <div class="footer-links">
+        <a href="https://www.johnwhale.com/#about">Chi sono</a>
+        <a href="https://www.johnwhale.com/#philosophy">Economic Ways</a>
+        <a href="https://www.johnwhale.com/#consulting">Consulenza</a>
+        <a href="https://www.johnwhale.com/privacy.html">Privacy</a>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/johnwhaledev/" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://open.spotify.com/intl-it/artist/7etRtq3G1vv4HOwIO29VgK" target="_blank" rel="noopener">Spotify</a>
+        <a href="https://www.linkedin.com/in/gianluca-savona/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://ko-fi.com/johnwhale" target="_blank" rel="noopener">Ko-fi</a>
+        <a href="mailto:hi@johnwhale.com">hi@johnwhale.com</a>
+      </div>
+    </footer>
+    <div class="footer-copy">JOHN WHALE © 2026 — Economic Ways.</div>
+
+  </main>
+
+  <!-- ── Modale CV ─────────────────────────────────────────── -->
+  <div class="meteo-modal-overlay" x-show="showCv" x-cloak @click.self="showCv=false" @keydown.escape.window="showCv=false">
+    <div class="meteo-modal" style="max-width:680px;">
+      <button class="meteo-modal-close" @click="showCv=false">✕</button>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.6rem;">
+        <div>
+          <h3 style="margin:0;color:var(--jw-white);font-size:1.3rem;" x-text="cv.nome"></h3>
+          <div style="color:var(--jw-accent);font-family:'Ubuntu Mono',monospace;font-size:0.85rem;margin-top:0.2rem;" x-text="cv.ruolo"></div>
+        </div>
+      </div>
+      <p style="color:var(--jw-text);font-size:0.92rem;line-height:1.6;margin:0.9rem 0 0;" x-text="cv.sommario"></p>
+      <div class="meta-mono" style="margin-top:0.8rem;font-size:0.8rem;">
+        <span x-text="cv.location"></span> ·
+        <a :href="'mailto:' + cv.email" style="color:var(--jw-accent);text-decoration:none;" x-text="cv.email"></a>
+        <template x-if="cv.linkedin"> · <a :href="cv.linkedin" target="_blank" rel="noopener" style="color:var(--jw-accent);text-decoration:none;">LinkedIn</a></template>
+      </div>
+
+      <div class="cv-block">
+        <h5>Esperienze</h5>
+        <template x-for="(e, i) in (cv.esperienze || [])" :key="i">
+          <div class="cv-exp">
+            <div class="cv-exp-head">
+              <span class="cv-exp-role" x-text="e.ruolo"></span>
+              <span class="cv-exp-when" x-text="e.periodo"></span>
+            </div>
+            <div class="cv-exp-org"><span x-text="e.azienda"></span><span x-show="e.luogo" x-text="' · ' + e.luogo"></span></div>
+            <ul><template x-for="(p, j) in (e.punti || [])" :key="j"><li x-text="p"></li></template></ul>
+          </div>
+        </template>
+      </div>
+
+      <div class="cv-block">
+        <h5>Competenze</h5>
+        <template x-for="(c, i) in (cv.competenze || [])" :key="i">
+          <div class="cv-comp">
+            <div class="cv-comp-cat" x-text="c.categoria"></div>
+            <div class="chip-row" style="margin-top:0;">
+              <template x-for="v in (c.voci || [])" :key="v">
+                <span class="chip-kw" style="color:var(--jw-accent);border-color:rgba(46,204,113,0.4);" x-text="v"></span>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div class="cv-block">
+        <h5>Istruzione & Certificazioni</h5>
+        <ul class="cv-list"><template x-for="(f, i) in (cv.formazione || [])" :key="i"><li x-text="f"></li></template></ul>
+      </div>
+
+      <div class="cv-block">
+        <h5>Lingue</h5>
+        <div class="chip-row" style="margin-top:0;">
+          <template x-for="(l, i) in (cv.lingue || [])" :key="i">
+            <span class="chip-kw" style="color:var(--jw-muted);border-color:var(--jw-border);" x-text="l.lingua + ' — ' + l.livello"></span>
+          </template>
+        </div>
+      </div>
+
+      <div class="cv-block" x-show="cv.extra">
+        <h5>Altro</h5>
+        <p style="font-size:0.88rem;color:var(--jw-muted);line-height:1.6;margin:0;" x-text="cv.extra"></p>
+      </div>
+    </div>
+  </div>
+
+
+<script data-goatcounter="https://minilab.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+
+</body>
+
+</html>
