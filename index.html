@@ -150,7 +150,7 @@ p.lead { color: var(--text); max-width: 60ch; line-height: 1.8; }
 
 /* ── PRESENCE STRIP ── */
 .presence-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.25rem; margin-top: 3rem; }
-#projects .presence-strip { grid-template-columns: repeat(2,1fr); max-width: 640px; }
+#projects .presence-strip { grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); max-width: 900px; }
 .presence-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--rl); padding: 1.4rem; text-decoration: none; transition: border-color .2s, transform .2s; display: block; }
 .presence-card:hover { border-color: rgba(46,204,113,.35); transform: translateY(-2px); }
 .presence-platform { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: .14em; margin-bottom: .6rem; text-transform: uppercase; }
@@ -370,10 +370,15 @@ footer { border-top: 1px solid var(--border); padding: 3rem 2.5rem 2rem; display
     <p class="lead">Strumenti che uso e sviluppo in prima persona, applicando Economic Ways al di fuori del lavoro da consulente.</p>
 
     <div class="presence-strip reveal">
-      <a href="/miniLab/" class="presence-card">
+      <a href="/miniLab/brief.html" class="presence-card">
         <div class="presence-platform">Lab</div>
-        <div class="presence-url">miniLab</div>
-        <div class="presence-note">Vetrina live autogenerata<br>news AI, offerte lavoro, meteo</div>
+        <div class="presence-url">Daily Brief</div>
+        <div class="presence-note">Meteo regione per regione<br>e rassegna news tech/AI</div>
+      </a>
+      <a href="/miniLab/match.html" class="presence-card">
+        <div class="presence-platform">Lab</div>
+        <div class="presence-url">Match</div>
+        <div class="presence-note">Offerte di lavoro ordinate<br>per affinità semantica col CV</div>
       </a>
       <a href="https://sumidi.johnwhale.com" target="_blank" rel="noopener" class="presence-card">
         <div class="presence-platform">Tool</div>
