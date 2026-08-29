@@ -115,23 +115,23 @@ a:hover { text-decoration: underline; }
       Questa sezione assolve agli obblighi di trasparenza previsti dall'<strong>art. 50 del Regolamento UE 2024/1689 (AI Act)</strong>, applicabili dal 2 agosto 2026, e dalla <strong>Legge 23 settembre 2025, n. 132</strong>, prima legge italiana in materia di intelligenza artificiale, in vigore dal 10 ottobre 2025.
     </p>
 
-    <h2 style="font-size:11px;color:var(--text);opacity:.8">4.1 — Vetrina /miniLab</h2>
+    <h2 style="font-size:11px;color:var(--text);opacity:.8">4.1 — Vetrina /miniLab (Daily Brief e Match)</h2>
     <p>
-      La sezione <a href="/miniLab/">/miniLab</a> è una vetrina autogenerata a scopo di <strong>laboratorio/portfolio</strong>: mostra in funzione alcuni strumenti che sviluppo (rassegna news tech/AI, ricerca di offerte di lavoro con ranking semantico, meteo). Non è un servizio erogato a terzi. La pagina viene rigenerata periodicamente da un processo automatico lato server (non ad ogni visita), che utilizza:
+      La sezione <a href="/miniLab/">/miniLab</a> è una vetrina autogenerata a scopo di <strong>laboratorio/portfolio</strong>, divisa in due pagine indipendenti: il <strong>Daily Brief</strong> (rassegna news tech/AI e meteo) e <strong>Match</strong> (ricerca di offerte di lavoro con ranking semantico). Non è un servizio erogato a terzi. Entrambe le pagine vengono rigenerate periodicamente da un processo automatico lato server (non ad ogni visita), che utilizza:
     </p>
     <ul>
       <li>
-        <strong>Groq (LLM cloud, USA):</strong> traduce e riassume in italiano i titoli delle notizie tech/AI raccolte da fonti RSS pubbliche. Riceve esclusivamente testo di notizie pubbliche — non riceve mai dati personali dei visitatori né dati del mio CV.
+        <strong>Groq (LLM cloud, USA):</strong> usato dal <strong>Daily Brief</strong>, traduce e riassume in italiano i titoli delle notizie tech/AI raccolte da fonti RSS pubbliche. Riceve esclusivamente testo di notizie pubbliche — non riceve mai dati personali dei visitatori né dati del mio CV.
       </li>
       <li>
-        <strong>Adzuna:</strong> API di ricerca annunci di lavoro, interrogata dal processo di generazione automatica della pagina e non dal tuo browser — nessun tuo dato viene inviato ad Adzuna quando visiti il sito.
+        <strong>Adzuna:</strong> usato da <strong>Match</strong>, API di ricerca annunci di lavoro, interrogata dal processo di generazione automatica della pagina e non dal tuo browser — nessun tuo dato viene inviato ad Adzuna quando visiti il sito.
       </li>
       <li>
-        <strong>fastembed (modello multilingual-e5-large):</strong> confronta semanticamente gli annunci di lavoro con il mio profilo professionale per ordinarli per affinità. L'elaborazione avviene interamente in locale durante la generazione della pagina — nessun dato viene inviato a servizi esterni per questo scopo. Il profilo usato per il confronto contiene solo ruolo e competenze professionali, già pubblici altrove su questo sito: nessun dato sensibile.
+        <strong>fastembed (modello multilingual-e5-large):</strong> usato da <strong>Match</strong>, confronta semanticamente gli annunci di lavoro con il mio profilo professionale per ordinarli per affinità. L'elaborazione avviene interamente in locale durante la generazione della pagina — nessun dato viene inviato a servizi esterni per questo scopo. Il profilo usato per il confronto contiene solo ruolo e competenze professionali, già pubblici altrove su questo sito: nessun dato sensibile.
       </li>
     </ul>
     <div class="notice">
-      <p>Titoli e sintesi delle notizie mostrate in <a href="/miniLab/">/miniLab</a> sono <strong>tradotti e riassunti con l'ausilio di un modello linguistico automatico</strong> (Groq) e non sono redazione editoriale originale. La stessa indicazione è riportata direttamente nella pagina, accanto alla sezione interessata.</p>
+      <p>Titoli e sintesi delle notizie mostrate nel <strong>Daily Brief</strong> (<a href="/miniLab/">/miniLab</a>) sono <strong>tradotti e riassunti con l'ausilio di un modello linguistico automatico</strong> (Groq) e non sono redazione editoriale originale. La stessa indicazione è riportata direttamente nella pagina, accanto alla sezione interessata. La pagina <strong>Match</strong> non mostra notizie e non è coinvolta in questa nota.</p>
     </div>
 
     <h2 style="font-size:11px;color:var(--text);opacity:.8">4.2 — Articoli e testi del sito</h2>
