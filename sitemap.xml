@@ -14,8 +14,14 @@
   </url>
   <url>
     <loc>https://www.johnwhale.com/miniLab/</loc>
-    <lastmod>2026-08-06</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.johnwhale.com/miniLab/match.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
