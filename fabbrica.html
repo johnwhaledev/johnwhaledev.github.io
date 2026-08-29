@@ -57,9 +57,7 @@
 }
 </script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
 <style>
 :root {
   --bg:     #0d1518; --bg2: #121c20; --bg3: #162028;
@@ -133,6 +131,10 @@ article { padding: 3.5rem 0; }
 /* ── PULLQUOTE ── */
 .pullquote { border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 1.5rem 0; background: rgba(46,204,113,.04); border-radius: 0 var(--r) var(--r) 0; }
 .pullquote p { color: var(--white); font-style: italic; margin-bottom: 0 !important; }
+
+/* ── NOTA DI TRASPARENZA (art. 50 AI Act) ── */
+.article-transparency { margin-top: 3.5rem; }
+.article-transparency p { font-size: .95rem; color: var(--muted); line-height: 1.8; margin-bottom: 0 !important; }
 
 /* ── SECTION IMAGE ── */
 .section-img { width: 100%; border-radius: var(--r); display: block; image-rendering: pixelated; margin-bottom: 2rem; }
@@ -262,6 +264,12 @@ footer { border-top: 1px solid var(--border); padding: 3rem 2.5rem 2rem; display
   <p>Buona parte di questo gira su un PC consumer, senza cloud a pagamento, con dati che non escono mai. Per una PMI manifatturiera che guarda all'AI con interesse e diffidenza insieme, è la dimostrazione che esiste una terza via tra "ignorare l'AI" e "mandare i dati di produzione a un fornitore americano".</p>
 
   <p>La mappa qui sopra è la fabbrica vera, non uno schema idealizzato. Se vuoi vederla più da vicino — o se nel tuo stabilimento c'è un processo che meriterebbe una linea dedicata — mi trovi qui.</p>
+
+  <!-- Trasparenza IA — art. 50 Reg. UE 2024/1689 (AI Act) -->
+  <div class="article-transparency">
+    <div class="corsia-label">Trasparenza</div>
+    <p>Questo articolo è stato scritto con l'assistenza di strumenti di intelligenza artificiale generativa. Contenuti, tesi ed esempi sono miei: il testo è stato rivisto e validato prima della pubblicazione e ne assumo la piena responsabilità editoriale.</p>
+  </div>
 
   <!-- CTA -->
   <div class="article-cta">
