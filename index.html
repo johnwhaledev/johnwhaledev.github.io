@@ -162,7 +162,6 @@ p.lead { color: var(--text); max-width: 60ch; line-height: 1.8; }
 .stack-list li:first-child { border-top: 1px solid var(--border); }
 .stack-name { font-family: var(--mono); font-size: 12px; color: var(--white); min-width: 150px; flex-shrink: 0; }
 .stack-why { color: var(--muted); flex: 1; }
-.stack-not { font-family: var(--mono); font-size: 10px; color: var(--border); text-decoration: line-through; flex-shrink: 0; }
 .code-block { background: #0a1012; border: 1px solid var(--border); border-radius: var(--r); padding: 1.5rem; font-family: var(--mono); font-size: 12px; color: var(--text); line-height: 2; overflow-x: auto; }
 .cm { color: var(--muted); } .kw { color: #00b4d8; } .str { color: #c3e88d; }
 
@@ -283,8 +282,8 @@ footer { border-top: 1px solid var(--border); padding: 3rem 2.5rem 2rem; display
         <span class="pillar-num">03</span>
         <div>
           <div class="pillar-title">Developer</div>
-          <div class="pillar-desc">App Android, web tool, siti statici. Sempre il minimo stack funzionante che resta manutenibile nel tempo.</div>
-          <div class="tags"><span class="tag">Kotlin / Android</span><span class="tag">HTML + Alpine.js</span><span class="tag">FastAPI</span></div>
+          <div class="pillar-desc">App Android, web tool, siti statici. Sempre la soluzione più semplice che funziona e resta manutenibile nel tempo.</div>
+          <div class="tags"><span class="tag">Kotlin / Android</span><span class="tag">React / TypeScript</span><span class="tag">FastAPI</span></div>
         </div>
       </div>
       <div class="pillar reveal">
@@ -328,16 +327,16 @@ footer { border-top: 1px solid var(--border); padding: 3rem 2.5rem 2rem; display
   <div class="container">
     <div class="section-label">02 — Philosophy</div>
     <h2>Economic Ways.</h2>
-    <p class="lead">Il mio approccio allo sviluppo: soluzioni minime che funzionano, zero componenti inutili. Ogni dipendenza che non aggiungi è manutenzione che non paghi — e un tool che qualsiasi developer può toccare dopo la consegna.</p>
+    <p class="lead">Il mio approccio allo sviluppo: la soluzione più semplice che funziona, e mai la stessa cosa due volte. Uno stack solo, moduli riusati da un progetto all'altro, niente servizi a pagamento dove basta il locale. Ogni pezzo scelto è manutenzione che paghi una volta sola.</p>
 
     <div class="ew-grid">
       <ul class="stack-list reveal">
-        <li><span class="stack-name">HTML + Alpine.js</span><span class="stack-why">Reattività senza runtime overhead</span><span class="stack-not">React / Next.js</span></li>
-        <li><span class="stack-name">Pico.css</span><span class="stack-why">Stili semantici, zero class soup</span><span class="stack-not">Tailwind</span></li>
-        <li><span class="stack-name">DuckDB in-process</span><span class="stack-why">SQL analitico, zero server</span><span class="stack-not">Postgres + ORM</span></li>
-        <li><span class="stack-name">SQLite on-device</span><span class="stack-why">Locale, privato, veloce</span><span class="stack-not">Cloud sync</span></li>
-        <li><span class="stack-name">Static hosting</span><span class="stack-why">Zero ops, CDN istantaneo</span><span class="stack-not">Serverless infra</span></li>
-        <li><span class="stack-name">Polars</span><span class="stack-why">Dataframe veloci, tipi nativi</span><span class="stack-not">pandas</span></li>
+        <li><span class="stack-name">React 19 + Vite</span><span class="stack-why">Frontend tipizzato, build solo dove serve</span></li>
+        <li><span class="stack-name">Mantine + AG Grid</span><span class="stack-why">Un solo tema, componenti già accessibili</span></li>
+        <li><span class="stack-name">DuckDB in-process</span><span class="stack-why">SQL analitico, zero server</span></li>
+        <li><span class="stack-name">SQLite on-device</span><span class="stack-why">Locale, privato, veloce</span></li>
+        <li><span class="stack-name">Static hosting</span><span class="stack-why">Zero ops, CDN istantaneo</span></li>
+        <li><span class="stack-name">Polars</span><span class="stack-why">Dataframe veloci, tipi nativi</span></li>
       </ul>
       <div class="reveal">
         <div class="code-block"><span class="cm"># Economic Ways — applicato</span>
